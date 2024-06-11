@@ -93,10 +93,8 @@ public class activity_item_selected_agenda_test extends AppCompatActivity {
          @SuppressLint({"NewApi", "LocalSuppress"}) LocalDate localdataEscolhida = LocalDate.parse(dataTarefa);
          @SuppressLint({"NewApi", "LocalSuppress"}) String dataFormatada = localdataEscolhida.format(formatter);
 
-
         editTextTitulo.setText(tituloTarefa);
         editTextDesc.setText(descTarefa);
-
 
         if(lembreteTarefa) {
 
@@ -107,6 +105,7 @@ public class activity_item_selected_agenda_test extends AppCompatActivity {
             textViewData.setText("");
             textViewHora.setText("");
         }
+
         editTextTitulo.addTextChangedListener(textWatcher);
         editTextDesc.addTextChangedListener(textWatcher);
         aswitch.setOnCheckedChangeListener(switchListener);
@@ -201,9 +200,11 @@ public class activity_item_selected_agenda_test extends AppCompatActivity {
 
 
         if (text1Changed || text2Changed || switchChanged || dateChanged|| hourChanged) {
+
             imageViewCheck.setVisibility(View.VISIBLE);
 
         } else {
+
             imageViewCheck.setVisibility(View.GONE);
 
         }
@@ -265,7 +266,6 @@ public class activity_item_selected_agenda_test extends AppCompatActivity {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
-
                 selectedHour.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 selectedHour.set(Calendar.MINUTE, minute);
                 Date time = new Date();
@@ -288,12 +288,8 @@ public class activity_item_selected_agenda_test extends AppCompatActivity {
                 editor.putInt("arquivo_Hora", horadefinida);
                 editor.putInt("arquivo_Minuto", minutodefinido);
                 editor.apply();
-                checkForChanges();
-                Log.d("Hora Selecionada", "HoraSelecionada: "+selectedHour.get(Calendar.HOUR_OF_DAY));
-                Log.d("Minuto Selecionada", "Minuto Selecionada: "+selectedHour.get(Calendar.MINUTE));
 
-                Log.d("Hora inicial", "Hora inicial: "+calendar.get(Calendar.HOUR_OF_DAY));
-                Log.d("Minuto inicial", "Minuto inicial: "+calendar.get(Calendar.MINUTE));
+                checkForChanges();
 
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);

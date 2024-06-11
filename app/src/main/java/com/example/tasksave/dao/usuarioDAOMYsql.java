@@ -148,6 +148,29 @@ public class usuarioDAOMYsql {
             return false;
         }
     }
+    public double getVersionAPP() {
+        double versaoAppDB = 0.0;
+        ConnectionClass connectionClass = new ConnectionClass();
+        conn = connectionClass.CONN();
+        try {
+
+            String query = "SELECT versao FROM versaoapp WHERE id = 1";
+            PreparedStatement statement = conn.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                versaoAppDB = resultSet.getDouble("versao");
+            }
+
+            resultSet.close();
+            statement.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return versaoAppDB;
+    }
 }
 
 
