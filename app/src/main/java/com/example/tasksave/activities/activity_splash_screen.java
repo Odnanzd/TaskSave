@@ -5,14 +5,10 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
@@ -35,13 +31,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.tasksave.conexaoMYSQL.ConnectionClass;
-import com.example.tasksave.dao.AgendaDAO;
 import com.example.tasksave.dao.usuarioDAOMYsql;
-import com.example.tasksave.objetos.Agenda;
 import com.example.tasksave.objetos.User;
-import com.example.tasksave.servicesreceiver.AlarmReceiver;
 import com.example.tasksave.R;
-import com.example.tasksave.servicesreceiver.AlarmScheduler;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -49,7 +41,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executor;
@@ -119,49 +110,49 @@ public class activity_splash_screen extends AppCompatActivity {
 
             ConnectionClass connectionClass = new ConnectionClass();
 
-                try {
-                    con = connectionClass.CONN();
-                    if (con == null) {
-                        str = "Erro de autenticação";
+            try {
+                con = connectionClass.CONN();
+                if (con == null) {
+                    str = "Erro de autenticação";
 
-                    } else {
+                } else {
 
-                        User user = new User();
-                        user.setEmail_usuario(valorEmail);
-                        user.setSenha_usuario(valorsenha);
+                    User user = new User();
+                    user.setEmail_usuario(valorEmail);
+                    user.setSenha_usuario(valorsenha);
 
-                        usuarioDAOMYsql usuarioDAOMYsql = new usuarioDAOMYsql();
-                        ResultSet resultSet = usuarioDAOMYsql.autenticaUsuarioAWS(user);
+                    usuarioDAOMYsql usuarioDAOMYsql = new usuarioDAOMYsql();
+                    ResultSet resultSet = usuarioDAOMYsql.autenticaUsuarioAWS(user);
 
-                        if (resultSet.next()) {
-                            // Sucesso na autenticação
-                            str = "Sucesso";
-                            if (sharedPrefs4.getBoolean("SalvarSenha", false) && sharedPrefs3.getBoolean("AcessoFingerPrint", false)) {
+                    if (resultSet.next()) {
+                        // Sucesso na autenticação
+                        str = "Sucesso";
+                        if (sharedPrefs4.getBoolean("SalvarSenha", false) && sharedPrefs3.getBoolean("AcessoFingerPrint", false)) {
 
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ExibirFingerprint(); // Chama o método ExibirFingerprint() na thread principal
-                                    }
-                                });
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ExibirFingerprint(); // Chama o método ExibirFingerprint() na thread principal
+                                }
+                            });
 
-                            } else if (sharedPrefs4.getBoolean("SalvarSenha", false) && !sharedPrefs3.getBoolean("AcessoFingerPrint", false)) {
+                        } else if (sharedPrefs4.getBoolean("SalvarSenha", false) && !sharedPrefs3.getBoolean("AcessoFingerPrint", false)) {
 
-                                Intent intent = new Intent(activity_splash_screen.this, activity_main.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
+                            Intent intent = new Intent(activity_splash_screen.this, activity_main.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
 
-                            } else {
-                                // Falha na autenticação
-                                str2 = "ERRO";
-                                Toast.makeText(getBaseContext(), "ERRO", Toast.LENGTH_SHORT).show();
-                            }
+                        } else {
+                            // Falha na autenticação
+                            str2 = "ERRO";
+                            Toast.makeText(getBaseContext(), "ERRO", Toast.LENGTH_SHORT).show();
                         }
                     }
-                } catch(SQLException e){
-
-                    Log.d("ERRO SQL AUT", "ERRO SQL" + e);
                 }
+            } catch(SQLException e){
+
+                Log.d("ERRO SQL AUT", "ERRO SQL" + e);
+            }
             return null;
         }
 

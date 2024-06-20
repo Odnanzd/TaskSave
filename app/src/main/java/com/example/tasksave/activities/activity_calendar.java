@@ -19,7 +19,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class activity_calendar extends AppCompatActivity implements CalendarAdapter.OnItemListener{
+public class activity_calendar extends AppCompatActivity implements CalendarAdapter.OnItemListener {
 
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
@@ -65,7 +65,7 @@ public class activity_calendar extends AppCompatActivity implements CalendarAdap
                 daysInMonthArray.add(String.valueOf(i - dayOfWeek));
             }
         }
-            return daysInMonthArray;
+        return daysInMonthArray;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

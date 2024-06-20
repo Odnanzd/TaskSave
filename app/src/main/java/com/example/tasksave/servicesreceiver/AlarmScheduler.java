@@ -12,7 +12,7 @@ import java.util.Calendar;
 
 public class AlarmScheduler {
     @SuppressLint({"ScheduleExactAlarm", "NewApi"})
-    public static void scheduleAlarm(Context context, Calendar calendar, String title, String content, int repeatMode, long id, LocalDate localDate) {
+    public static void scheduleAlarm(Context context, long triggerAtMillis, String title, String content, int repeatMode, long id, LocalDate localDate) {
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
@@ -34,7 +34,26 @@ public class AlarmScheduler {
         );
 
         if (alarmManager != null) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+            Log.d("AlarmScheduler", "Intent" + triggerAtMillis);
+        }
+    }
+    @SuppressLint("NewApi")
+    public static void cancelAlarm(Context context, long id) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        int idInt = (int) id;
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                idInt,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+            Log.d("AlarmScheduler", "Alarme cancelado para o ID: " + id);
+        }else {
+            Log.d("AlarmScheduler", "Alarme não encontrado para o ID: "+id);
         }
     }
 }

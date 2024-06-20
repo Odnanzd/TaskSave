@@ -40,7 +40,7 @@
         <item name="android:textColor">@color/white</item>
     </style>
     <style name="BackgroundFingerPrint">
-    <item name="android:tint">@color/white1</item>
+        <item name="android:tint">@color/white1</item>
     </style>
 
     <style name="TextColorTheme3">
@@ -116,15 +116,15 @@
         <item name="android:src">@drawable/profile3</item>
     </style>
 
-        <style name="CalendarTheme">
+    <style name="CalendarTheme">
 
-            <!-- Cor dos dias no mês no CalendarView -->
-            <item name="android:dateTextAppearance">@style/CalendarDateText</item>
-        </style>
-        <style name="CalendarDateText">
-            <!-- Cor dos dias no mês -->
-            <item name="android:textColor">@color/white</item>
-        </style>
+        <!-- Cor dos dias no mês no CalendarView -->
+        <item name="android:dateTextAppearance">@style/CalendarDateText</item>
+    </style>
+    <style name="CalendarDateText">
+        <!-- Cor dos dias no mês -->
+        <item name="android:textColor">@color/white</item>
+    </style>
 
     <style name="Background_add_agenda_data">
         <item name="android:background">@drawable/background_add_agenda_data_night</item>
@@ -224,5 +224,26 @@
     </style>
     <style name="ImageViewIconPencil">
         <item name="android:src">@drawable/pencil_icon_svg_dark</item>
+    </style>
+    <style name="IconBellImage">
+        <item name="android:src">@drawable/icon_bell</item>
+    </style>
+    <style name="IconCalendarImage">
+        <item name="android:src">@drawable/baseline_calendar_month_24</item>
+    </style>
+    <style name="IconHoraImage">
+        <item name="android:src">@drawable/baseline_schedule_24</item>
+    </style>
+    <style name="IconRefreshImage">
+        <item name="android:src">@drawable/refresh_icon</item>
+    </style>
+    <style name="IconDescImage">
+        <item name="android:src">@drawable/icon_desc</item>
+    </style>
+    <style name="IconDownImage">
+        <item name="android:src">@drawable/down_icon</item>
+    </style>
+    <style name="IconCheckImage">
+        <item name="android:src">@drawable/icon_check</item>
     </style>
 </resources>

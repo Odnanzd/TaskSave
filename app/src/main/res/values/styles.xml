@@ -25,11 +25,17 @@
     </style>
 
     <style name="DialogAboveKeyboard2" parent="Theme.AppCompat.Light.Dialog">
-    <item name="android:windowIsFloating">true</item>
-    <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="android:textColorHint">@color/grey2</item>
         <item name="android:textColor">@color/grey2</item>
 
+    </style>
+    <style name="BottomSheetTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle" >@style/BottomSheetStyle</item>
+    </style>
+    <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
 

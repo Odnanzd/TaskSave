@@ -14,13 +14,10 @@ import com.example.tasksave.R;
 import com.example.tasksave.activities.activity_main;
 import com.example.tasksave.dao.AgendaDAO;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Calendar;
-import java.util.Date;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
@@ -29,78 +26,91 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        String action = intent.getAction();
+        Log.d("AlarmReceiver", "Ação recebida: " + action);
+
+        if (action==null) {
             Notificar(intent, context);
-            if (intent.getAction() != null && intent.getAction().equals("ACTION_CONCLUIR")) {
-                processarAcaoConcluir(context, intent);
-            }else if (intent.getAction() != null && intent.getAction().equals("ACTION_OK")) {
-                processarAcaoOk(context, intent);
-            }
+        }else if (action.equals("ACTION_CONCLUIR")) {
+            processarAcaoConcluir(context, intent);
+        }else if(action.equals("ACTION_OK")) {
+            processarAcaoOk(context, intent);
+        }
     }
 
     @SuppressLint("NewApi")
     private void Notificar(Intent intent, Context context) {
-
         String title = intent.getStringExtra("title");
         String content = intent.getStringExtra("content");
         int repeatMode = intent.getIntExtra("repeatMode", 0);
         long id = intent.getLongExtra("idLong", 0);
 
+        if (title == null || title.isEmpty() || content == null || content.isEmpty()) {
 
-        int idInt = (int) id;
+            Log.e("AlarmReceiver", "Notificação com dados incompletos. Título ou descrição estão vazios.");
 
-        Intent intentConcluir = new Intent(context, AlarmReceiver.class);
-        intentConcluir.setAction("ACTION_CONCLUIR");
-        intentConcluir.putExtra("idLong", id); // Adicione o ID da tarefa ao Intent
+        }else {
 
-        PendingIntent pendingIntentConcluir = PendingIntent.getBroadcast(
-                context,
-                idInt,
-                intentConcluir,
-                PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
+            int idInt = (int) id;
 
-        Intent intentOk = new Intent(context, AlarmReceiver.class);
-        intentOk.setAction("ACTION_OK");
-        intentOk.putExtra("idLong", id);
+            Intent intentConcluir = new Intent(context, AlarmReceiver.class);
+            intentConcluir.setAction("ACTION_CONCLUIR");
+            intentConcluir.putExtra("idLong", id);
 
-        PendingIntent pendingIntentOk = PendingIntent.getBroadcast(
-                context,
-                idInt,
-                intentOk,
-                PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
+            PendingIntent pendingIntentConcluir = PendingIntent.getBroadcast(
+                    context,
+                    idInt,
+                    intentConcluir,
+                    PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
 
-        showNotification(context, title, content, pendingIntentConcluir, idInt, pendingIntentOk);
+            Intent intentOk = new Intent(context, AlarmReceiver.class);
+            intentOk.setAction("ACTION_OK");
+            intentOk.putExtra("idLong", id);
 
-        String dataEscolhida = intent.getStringExtra("dataIntent");
-        LocalDate localDateDataEscolhida = stringToLocalDate(dataEscolhida);
-        LocalDate localDateDataEscolhida2 = LocalDate.now();
+            PendingIntent pendingIntentOk = PendingIntent.getBroadcast(
+                    context,
+                    idInt,
+                    intentOk,
+                    PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
 
-        // Reagendar o próximo alarme
-        Calendar nextAlarm = Calendar.getInstance();
-        switch (repeatMode) {
-            case 1: // Todo dia
-                nextAlarm.add(Calendar.DAY_OF_YEAR, 1);
-                localDateDataEscolhida2 = localDateDataEscolhida.plusDays(1);
-                break;
-            case 2: // Toda semana
-                nextAlarm.add(Calendar.WEEK_OF_YEAR, 1);
-                localDateDataEscolhida2 = localDateDataEscolhida.plusWeeks(1);
-                break;
-            case 3: // Todo mês
-                nextAlarm.add(Calendar.MONTH, 1);
-                localDateDataEscolhida2 = localDateDataEscolhida.plusMonths(1);
-                break;
-        }
+            showNotification(context, title, content, pendingIntentConcluir, idInt, pendingIntentOk);
 
-        // Reagendar o alarme se repeatMode não for 0
-        if (repeatMode != 0) {
+            String dataEscolhida = intent.getStringExtra("dataIntent");
+            LocalDate localDateDataEscolhida = stringToLocalDate(dataEscolhida);
+            LocalDate localDateDataEscolhida2 = LocalDate.now();
+
+            // Reagendar o próximo alarme
+            Calendar nextAlarm = Calendar.getInstance();
+            switch (repeatMode) {
+                case 1: // Todo dia
+                    nextAlarm.add(Calendar.DAY_OF_YEAR, 1);
+                    localDateDataEscolhida2 = localDateDataEscolhida.plusDays(1);
+                    break;
+                case 2: // Toda semana
+                    nextAlarm.add(Calendar.WEEK_OF_YEAR, 1);
+                    localDateDataEscolhida2 = localDateDataEscolhida.plusWeeks(1);
+                    break;
+                case 3: // Todo mês
+                    nextAlarm.add(Calendar.MONTH, 1);
+                    localDateDataEscolhida2 = localDateDataEscolhida.plusMonths(1);
+                    break;
+                case 4:
+                    nextAlarm.add(Calendar.YEAR, 1);
+                    localDateDataEscolhida2 = localDateDataEscolhida.plusYears(1);
+                    break;
+            }
+
+            // Reagendar o alarme se repeatMode não for 0
+            if (repeatMode != 0) {
+                AgendaDAO agendaDAO = new AgendaDAO(context);
+                AlarmScheduler.scheduleAlarm(context, nextAlarm.getTimeInMillis(), title, content, repeatMode, id, localDateDataEscolhida2);
+                agendaDAO.AtualizarDataTarefa(id, localDateDataEscolhida2);
+            }
             AgendaDAO agendaDAO = new AgendaDAO(context);
-            AlarmScheduler.scheduleAlarm(context, nextAlarm, title, content, repeatMode, id, localDateDataEscolhida2);
-            agendaDAO.AtualizarDataTarefa(id, localDateDataEscolhida2);
+            agendaDAO.AtualizarStatusNotificacao(id, 1);
         }
-        AgendaDAO agendaDAO = new AgendaDAO(context);
-        agendaDAO.AtualizarStatusNotificacao(id, 1);
     }
 
     @SuppressLint("MissingPermission")
@@ -145,8 +155,8 @@ public class AlarmReceiver extends BroadcastReceiver {
             Log.e("AlarmReceiver", "ID da tarefa não encontrado no Intent");
         }
     }
-    private void processarAcaoOk(Context context, Intent intent) {
 
+    private void processarAcaoOk(Context context, Intent intent) {
         long idTarefa = intent.getLongExtra("idLong", 0);
         if (idTarefa != 0) {
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
@@ -157,6 +167,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             Log.e("AlarmReceiver", "ID da tarefa não encontrado no Intent para ação OK");
         }
     }
+
     @SuppressLint("NewApi")
     public static LocalDate stringToLocalDate(String dateString) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

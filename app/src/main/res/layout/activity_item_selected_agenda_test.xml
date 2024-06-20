@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:src="@drawable/icon_desc"
+        style="@style/IconDescImage"
         app:layout_constraintEnd_toStartOf="@+id/descricao_text_view"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
         android:visibility="gone"
-        android:src="@drawable/icon_check"
+        style="@style/IconCheckImage"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
@@ -121,7 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="22dp"
                 android:layout_marginTop="7dp"
-                android:background="@drawable/icon_bell"
+                style="@style/IconBellImage"
                 tools:layout_editor_absoluteX="14dp"
                 tools:layout_editor_absoluteY="112dp" />
 
@@ -130,7 +130,7 @@
                 style="@style/TextViewMain"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="7dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/ptsans_bold"
@@ -145,6 +145,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
+                android:layout_marginEnd="3dp"
                 android:checked="false"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
@@ -184,7 +185,7 @@
                 android:layout_height="28dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/baseline_calendar_month_24"
+                style="@style/IconCalendarImage"
                 tools:layout_editor_absoluteX="14dp"
                 tools:layout_editor_absoluteY="112dp" />
 
@@ -198,7 +199,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/ptsans_bold"
                 android:gravity="start"
-                android:text="@string/text_view_data_edit"
+                android:text="@string/text_view_dat_edit"
                 android:textSize="18sp"
                 tools:layout_editor_absoluteX="0dp"
                 tools:layout_editor_absoluteY="0dp" />
@@ -208,11 +209,11 @@
                 style="@style/TextColorAddAgenda"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
                 android:fontFamily="@font/ptsans_bold"
-                android:text="@string/text_view_data"
-                android:textSize="19sp"
+                android:text="@string/text_view_data_edit"
+                android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/LinearLayout"
                 tools:ignore="MissingConstraints" />
@@ -252,7 +253,7 @@
                 android:layout_height="28dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/baseline_schedule_24"
+                style="@style/IconHoraImage"
                 tools:layout_editor_absoluteX="14dp"
                 tools:layout_editor_absoluteY="112dp" />
 
@@ -266,7 +267,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/ptsans_bold"
                 android:gravity="start"
-                android:text="@string/text_view_hora_edit"
+                android:text="@string/text_view_hor_edit"
                 android:textSize="18sp"
                 tools:layout_editor_absoluteX="0dp"
                 tools:layout_editor_absoluteY="0dp" />
@@ -276,11 +277,11 @@
                 style="@style/TextColorAddAgenda"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
                 android:fontFamily="@font/ptsans_bold"
-                android:text="@string/text_view_horario"
-                android:textSize="19sp"
+                android:text="@string/text_view_hora_edit"
+                android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/LinearLayout"
                 tools:ignore="MissingConstraints" />
@@ -315,12 +316,13 @@
             android:foreground="?android:attr/selectableItemBackground"
 
             >
+
             <ImageView
                 android:layout_width="29dp"
                 android:layout_height="29dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/refresh_icon"
+                style="@style/IconRefreshImage"
                 tools:layout_editor_absoluteX="14dp"
                 tools:layout_editor_absoluteY="112dp" />
 
@@ -343,7 +345,7 @@
                 android:id="@+id/imageViewDown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/down_icon"
+                style="@style/IconDownImage"
                 android:layout_marginEnd="10dp"
                 android:layout_marginTop="7dp"
 

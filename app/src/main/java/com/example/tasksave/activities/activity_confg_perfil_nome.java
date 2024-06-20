@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -24,13 +23,12 @@ import com.example.tasksave.dao.usuarioDAOMYsql;
 import com.example.tasksave.objetos.User;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.w3c.dom.Text;
-
-import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class activity_confg_perfil_nome extends AppCompatActivity {
+
+
 
 
     FrameLayout frameLayout;
