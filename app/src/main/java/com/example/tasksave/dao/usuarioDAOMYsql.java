@@ -154,7 +154,7 @@ public class usuarioDAOMYsql {
         conn = connectionClass.CONN();
         try {
 
-            String query = "SELECT versao FROM versaoapp WHERE id = 1";
+            String query = "SELECT versao FROM versaoapp WHERE id = 3";
             PreparedStatement statement = conn.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
 

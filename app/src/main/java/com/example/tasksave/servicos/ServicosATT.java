@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,59 +40,36 @@ public class ServicosATT {
     String urlVersao;
     String versaoAtual;
     String versaoTeste;
+    String versaoDB;
     Context context;
 
-    public ServicosATT(Context context, String versaoAtual) {
+    public ServicosATT(Context context, String versaoAtual, String versaoDB) {
         this.versaoAtual =  versaoAtual;
-        this.versaoTeste = "2.0";
+        this.versaoDB = versaoDB;
+        this.versaoTeste = "2.2";
         this.context = context;
         this.urlVersao = "https://raw.githubusercontent.com/Odnanzd/TaskSaveAPK/main/versao.txt";
     }
-    public interface VerificarAttCallback {
-        void onResult(boolean isNewVersionAvailable);
-    }
 
-    public void verificarAtt(final VerificarAttCallback callback) {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url(urlVersao).build();
+    public boolean verificaAtt() {
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                ((Activity) context).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onResult(false); // Chame o callback com 'false' em caso de falha
-                    }
-                });
-            }
+        if (versaoAtual == null || versaoDB == null) {
+            Log.e("VerificaAtt", "versaoAtual ou versaoDB são nulos");
+//        return; // Saia do método se algum valor for nulo
+        }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException("Unexpected code " + response);
+        if (versaoDB.compareTo(versaoAtual) > 0) {
+            Log.d("TESTE BOOBLEAN", "TESTE");
+            ((Activity) context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    dialogAtt();
                 }
-
-                String versaoMaisRecente = response.body().string().trim();
-                if (versaoMaisRecente.compareTo(versaoAtual) > 0) {
-                    ((Activity) context).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            dialogAtt();
-                            callback.onResult(true); // Chame o callback com 'true' se houver uma nova versão
-                        }
-                    });
-                } else {
-                    ((Activity) context).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onResult(false); // Chame o callback com 'false' se não houver uma nova versão
-                        }
-                    });
-                }
-            }
-        });
+            });
+            return true;
+        }else {
+            return false;
+        }
     }
 
     void dialogAtt() {
@@ -200,7 +178,7 @@ public class ServicosATT {
     }
     public void instalarApk(File apkFile) {
         Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
-        Uri apkUri = FileProvider.getUriForFile(context, "com.example.tasksave.test.provider", apkFile);
+        Uri apkUri = FileProvider.getUriForFile(context, "com.example.tasksave.provider", apkFile);
         intent.setData(apkUri);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         context.startActivity(intent);
