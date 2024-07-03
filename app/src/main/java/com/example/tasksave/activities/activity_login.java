@@ -127,7 +127,7 @@ public class activity_login extends AppCompatActivity {
 
                 String userShared = usuarioDAOMYsql.usuarioCadastrado(emailUser, senhaUser);
 
-                    Log.d("userShared", "username" + userShared);
+                Log.d("userShared", "username" + userShared);
 
                 if (resultSet.next()) {
                     // Sucesso na autenticação
@@ -171,7 +171,7 @@ public class activity_login extends AppCompatActivity {
                         editor4.putBoolean("PrimeiroAcesso", true);
                         editor4.apply();
                         Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(activity_login.this, activity_main.class);
+                        Intent intent = new Intent(activity_login.this, activity_main_test.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     });
@@ -193,7 +193,7 @@ public class activity_login extends AppCompatActivity {
                 Log.d("ERRO SQL AUT", "ERRO SQL" + e);
             }
         });
-        }
+    }
     public void escondeTeclado() {
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (imm != null) {

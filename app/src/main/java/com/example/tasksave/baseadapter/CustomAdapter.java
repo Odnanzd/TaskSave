@@ -6,29 +6,20 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BlurMaskFilter;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
 import com.example.tasksave.R;
@@ -39,7 +30,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -231,7 +221,7 @@ public class CustomAdapter extends BaseAdapter {
 
 
 
-        final View yourView = convertView.findViewById(R.id.your_view);
+//        final View yourView = convertView.findViewById(R.id.your_view);
 
         checkBox.setVisibility(showCheckboxes ? View.VISIBLE : View.GONE);
 
@@ -246,77 +236,37 @@ public class CustomAdapter extends BaseAdapter {
             ImageView imageViewPalito = convertView.findViewById(R.id.imageViewpalito);
             imageViewPalito.setVisibility(View.VISIBLE);
 
-            Paint paintTitulo = text_view_tit_agenda.getPaint();
-            Paint paintData = text_view_dat_agenda.getPaint();
-            Paint paintHora = text_view_hr_agenda.getPaint();
-            Paint paintDesc = text_view_desc_agenda.getPaint();
-
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if(isChecked) {
+                    if(isChecked) {
 
-                            selectedCount++;
+                        selectedCount++;
 
-                            float radiusTitulo = text_view_tit_agenda.getTextSize() / 6;
 
-                            float radiusData = text_view_dat_agenda.getTextSize() / 6;
 
-                            float radiusHora = text_view_hr_agenda.getTextSize() / 6;
+                    } else {
 
-                            float radiusDesc = text_view_desc_agenda.getTextSize() / 6;
+                        selectedCount--;
 
-                            BlurMaskFilter filter = new BlurMaskFilter(radiusTitulo, BlurMaskFilter.Blur.NORMAL);
-                            paintTitulo.setMaskFilter(filter);
+                    }
 
-                            BlurMaskFilter filter2 = new BlurMaskFilter(radiusDesc, BlurMaskFilter.Blur.NORMAL);
-                            paintDesc.setMaskFilter(filter2);
-
-                            BlurMaskFilter filter3 = new BlurMaskFilter(radiusData, BlurMaskFilter.Blur.NORMAL);
-                            paintData.setMaskFilter(filter3);
-
-                            BlurMaskFilter filter4 = new BlurMaskFilter(radiusHora, BlurMaskFilter.Blur.NORMAL);
-                            paintHora.setMaskFilter(filter4);
-
-                            yourView.setVisibility(View.VISIBLE);
-                    yourView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            AnimatorSet animatorSet = new AnimatorSet();
-                            ObjectAnimator objectAnimator = (ObjectAnimator) AnimatorInflater.loadAnimator(context, R.animator.linhacrescente);
-                            objectAnimator.setTarget(yourView);
-                            animatorSet.play(objectAnimator);
-                            animatorSet.start();
-                        }
-                    });
-
-                        } else {
-
-                            selectedCount--;
-                            paintTitulo.setMaskFilter(null);
-                            paintDesc.setMaskFilter(null);
-                            paintData.setMaskFilter(null);
-                            paintHora.setMaskFilter(null);
-                    yourView.setVisibility(View.GONE);
-
-                        }
-
-                if (selectionChangedListener != null) {
+                    if (selectionChangedListener != null) {
                         selectionChangedListener.onItemSelectionChanged(selectedCount > 0);
                     }
 
-                        text_view_tit_agenda.invalidate();
-                        text_view_desc_agenda.invalidate();
-                        text_view_dat_agenda.invalidate();
-                        text_view_hr_agenda.invalidate();
+                    text_view_tit_agenda.invalidate();
+                    text_view_desc_agenda.invalidate();
+                    text_view_dat_agenda.invalidate();
+                    text_view_hr_agenda.invalidate();
 
-                    }
+                }
 
             });
             if (checkBox.getVisibility() == View.GONE) {
-                    checkBox.setChecked(false);
-                }
+                checkBox.setChecked(false);
+            }
 
             text_view_tit_agenda.setText(AgendaTitulo[position]);
             text_view_desc_agenda.setText(AgendaDescricao[position]);
@@ -354,307 +304,6 @@ public class CustomAdapter extends BaseAdapter {
                         Log.d("lembrete", "lembrete: "+lembrete);
                         context.startActivity(intent);
 
-
-
-
-//                        if (dialog == null) {
-//                            dialog = new Dialog(context, R.style.DialogAboveKeyboard2);
-//                            dialog.setContentView(R.layout.activity_item_selected_agenda);
-//                            dialog.setCancelable(true);
-//                            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogTheme;
-//                        }
-//
-//
-//                        TextView tituloTextView = dialog.findViewById(R.id.titulo_text_view);
-//                        TextView descricaoTextView = dialog.findViewById(R.id.descricao_text_view);
-//                        TextView dataTextView = dialog.findViewById(R.id.textView11);
-//                        TextView horaTextView = dialog.findViewById(R.id.textView12);
-//                        Button button = dialog.findViewById(R.id.button2);
-//                        Button button2 = dialog.findViewById(R.id.button);
-//                        EditText editTextTitulo = dialog.findViewById(R.id.titulo_text_view);
-//                        EditText editTextDescricao = dialog.findViewById(R.id.descricao_text_view);
-//                        TextView textViewContador = dialog.findViewById(R.id.text_view_contador1);
-//                        TextView textViewContador2 = dialog.findViewById(R.id.text_view_contador2);
-//                        CheckBox checkboxConcluido = dialog.findViewById(R.id.checkBoxConcluido);
-//                        ImageView imageView = dialog.findViewById(R.id.imageView4);
-//                        TextView textViewLembrete = dialog.findViewById(R.id.textViewLembretenaodefinido);
-//                        TextView textViewRepetirLembrete = dialog.findViewById(R.id.textViewRepetirModo);
-//
-//                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM");
-//                        LocalDate localdataEscolhida = LocalDate.parse(data);
-//                        String dataFormatada = localdataEscolhida.format(formatter);
-//
-//                        int tamanhoTitulo = titulo.length();
-//                        textViewContador.setText(tamanhoTitulo + "/14");
-//
-//
-//                        int tamanhoDescricao = descricao.length();
-//                        textViewContador2.setText(tamanhoDescricao + "/20");
-//
-//                        tituloTextView.setText(titulo);
-//                        descricaoTextView.setText(descricao);
-//
-//                        if(lembrete && !repetirLembrete) {
-//
-//                            dataTextView.setVisibility(View.VISIBLE);
-//                            horaTextView.setVisibility(View.VISIBLE);
-//                            textViewRepetirLembrete.setVisibility(View.VISIBLE);
-//                            horaTextView.setText(hora);
-//                            dataTextView.setText(dataFormatada);
-//                            textViewLembrete.setVisibility(View.GONE);
-//                            textViewRepetirLembrete.setText("Não Repetir");
-//
-//                        }else if(!lembrete) {
-//
-//                            textViewLembrete.setVisibility(View.VISIBLE);
-//                            textViewLembrete.setText("Lembrete não definido");
-//                            dataTextView.setVisibility(View.GONE);
-//                            horaTextView.setVisibility(View.GONE);
-//                            textViewRepetirLembrete.setVisibility(View.GONE);
-//
-//                        } else if(repetirLembrete) {
-//                            switch (repetirModoLembrete) {
-//                                case 1:
-//                                    dataTextView.setVisibility(View.VISIBLE);
-//                                    horaTextView.setVisibility(View.VISIBLE);
-//                                    textViewRepetirLembrete.setVisibility(View.VISIBLE);
-//                                    horaTextView.setText(hora);
-//                                    dataTextView.setText(dataFormatada);
-//                                    textViewLembrete.setVisibility(View.GONE);
-//                                    textViewRepetirLembrete.setText("Todo dia");
-//                                    break;
-//                                case 2:
-//                                    dataTextView.setVisibility(View.VISIBLE);
-//                                    horaTextView.setVisibility(View.VISIBLE);
-//                                    textViewRepetirLembrete.setVisibility(View.VISIBLE);
-//                                    horaTextView.setText(hora);
-//                                    dataTextView.setText(dataFormatada);
-//                                    textViewLembrete.setVisibility(View.GONE);
-//                                    textViewRepetirLembrete.setText("Toda Semana");
-//                                    break;
-//                                case 3:
-//                                    dataTextView.setVisibility(View.VISIBLE);
-//                                    horaTextView.setVisibility(View.VISIBLE);
-//                                    textViewRepetirLembrete.setVisibility(View.VISIBLE);
-//                                    horaTextView.setText(hora);
-//                                    dataTextView.setText(dataFormatada);
-//                                    textViewLembrete.setVisibility(View.GONE);
-//                                    textViewRepetirLembrete.setText("Todo Mês");
-//                                    break;
-//                                case 4:
-//                                    dataTextView.setVisibility(View.VISIBLE);
-//                                    horaTextView.setVisibility(View.VISIBLE);
-//                                    textViewRepetirLembrete.setVisibility(View.VISIBLE);
-//                                    horaTextView.setText(hora);
-//                                    dataTextView.setText(dataFormatada);
-//                                    textViewLembrete.setVisibility(View.GONE);
-//                                    textViewRepetirLembrete.setText("Todo ano");
-//                            }
-//                        }
-//                        imageView.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                dialog.dismiss();
-//                            }
-//                        });
-//                        checkboxConcluido.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                            @Override
-//                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                                if (isChecked) {
-//
-//                                    editTextDescricao.setEnabled(false);
-//                                    editTextDescricao.setTextColor(ContextCompat.getColor(context, R.color.grey2));
-//                                    editTextTitulo.setEnabled(false);
-//                                    editTextTitulo.setTextColor(ContextCompat.getColor(context, R.color.grey2));
-//                                    dataTextView.setEnabled(false);
-//                                    horaTextView.setEnabled(false);
-//                                    tituloTextView.setText(titulo);
-//                                    descricaoTextView.setText(descricao);
-//                                    button.setEnabled(true);
-//                                    button.setText("Concluir");
-//
-//                                } else {
-//                                    editTextDescricao.setEnabled(true);
-//                                    editTextDescricao.setTextColor(ContextCompat.getColor(context, R.color.white));
-//                                    editTextTitulo.setEnabled(true);
-//                                    editTextTitulo.setTextColor(ContextCompat.getColor(context, R.color.white));
-//                                    dataTextView.setEnabled(true);
-//                                    horaTextView.setEnabled(true);
-//                                    button.setEnabled(false);
-//                                    button.setText("Atualizar");
-//                                }
-//                            }
-//                        });
-//
-//                        editTextTitulo.addTextChangedListener(new TextWatcher() {
-//                            @Override
-//                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//                                // Não é necessário implementar nada aqui
-//                            }
-//
-//                            @Override
-//                            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                                // Verifica se o EditText não está vazio
-//                                String novoTitulo = s.toString();
-//                                boolean saoIguais = novoTitulo.equals(titulo);
-//
-//                                if (s.length() > 0 && !saoIguais) {
-//                                    button.setEnabled(true);
-//                                } else {
-//                                    button.setEnabled(false);
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void afterTextChanged(Editable s) {
-//                                // Não é necessário implementar nada aqui
-//                            }
-//                        });
-//                        editTextDescricao.addTextChangedListener(new TextWatcher() {
-//                            @Override
-//                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//                                // Não é necessário implementar nada aqui
-//                            }
-//
-//                            @Override
-//                            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                                // Verifica se o EditText não está vazio
-//                                String novoDes = s.toString();
-//                                boolean saoIguais = novoDes.equals(descricao);
-//
-//                                if (s.length() > 0 && !saoIguais) {
-//                                    button.setEnabled(true);
-//                                } else {
-//                                    button.setEnabled(false);
-//                                }
-//                            }
-//                            @Override
-//                            public void afterTextChanged(Editable s) {
-//                                // Não é necessário implementar nada aqui
-//                            }
-//                        });
-//
-//                        AgendaDAO agendaDAO = new AgendaDAO(context);
-//                        button.setOnClickListener(new View.OnClickListener() {
-//
-//
-//                            @Override
-//                            public void onClick(View v) {
-//
-//                                if(checkboxConcluido.isChecked()) {
-//
-//                                    Calendar calendar = Calendar.getInstance();
-//                                    int horasFim = calendar.get(Calendar.HOUR_OF_DAY);
-//                                    int minutosFim = calendar.get(Calendar.MINUTE);
-//                                    @SuppressLint({"NewApi", "LocalSuppress"})
-//                                    LocalDate dataAtual = LocalDate.now();
-//
-//                                    boolean finalizado = agendaDAO.AtualizarStatus(idTarefa, 1, dataAtual, horasFim, minutosFim);
-//
-//                                    if (finalizado) {
-//
-//                                        Toast.makeText(context, "Tarefa concluída.", Toast.LENGTH_SHORT).show();
-//                                        int clickedPosition = position;
-//                                        updateItem(clickedPosition);
-//                                        dialog.dismiss();
-//
-//                                    } else {
-//                                        // Algo deu errado na atualização
-//                                        Toast.makeText(context, "Erro ao atualizar a tarefa", Toast.LENGTH_SHORT).show();
-//                                    }
-//
-//
-//                                } else {
-//
-//                                    String novoTitulo = editTextTitulo.getText().toString();
-//                                    String novaDescricao = editTextDescricao.getText().toString();
-//
-//                                    // Aqui você deve pegar o ID da tarefa (que você passou como um extra na Intent)
-//
-//                                    // Atualize os valores no banco de dados
-//
-//                                    boolean atualizado = agendaDAO.Atualizar(idTarefa, novoTitulo, novaDescricao);
-//
-//                                    if (atualizado) {
-//                                        // Atualização bem-sucedida
-//                                        Toast.makeText(context, "Tarefa atualizada.", Toast.LENGTH_SHORT).show();
-//                                        int clickedPosition = position;
-//                                        updateItem(clickedPosition);
-//                                        dialog.dismiss();
-//                                    } else {
-//                                        Toast.makeText(context, "Erro ao atualizar a tarefa", Toast.LENGTH_SHORT).show();
-//                                    }
-//                                }
-//                            }
-//                        });
-//                        button2.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//
-//                                AlertDialog.Builder msgbox = new AlertDialog.Builder(context);
-//                                msgbox.setTitle("Excluir");
-//                                msgbox.setIcon(android.R.drawable.ic_menu_delete);
-//                                msgbox.setMessage("Você realmente deseja excluir a tarefa?");
-//                                msgbox.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog2, int which) {
-//
-//                                        boolean excluir = agendaDAO.Excluir(idTarefa);
-//                                        Toast.makeText(context, "Tarefa Excluida.", Toast.LENGTH_SHORT).show();
-//                                        int clickedPosition = position;
-//                                        deleteItem(clickedPosition);
-//                                        dialog.dismiss();
-//                                    }
-//                                });
-//                                msgbox.setNegativeButton("Não", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//
-//                                    }
-//                                });
-//                                msgbox.show();
-//                            }
-//                        });
-//                        editTextTitulo.addTextChangedListener(new TextWatcher() {
-//                            @Override
-//                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                            }
-//
-//                            @Override
-//                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                                // Atualizar o contador de caracteres
-//                                int currentLength = charSequence.length();
-//                                textViewContador.setText(currentLength + "/14");
-//                            }
-//
-//                            @Override
-//                            public void afterTextChanged(Editable editable) {
-//                                // Nada a fazer depois da mudança do texto
-//                            }
-//                        });
-//                        editTextDescricao.addTextChangedListener(new TextWatcher() {
-//                            @Override
-//                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                                // Nada a fazer antes da mudança do texto
-//                            }
-//
-//                            @Override
-//                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                                // Atualizar o contador de caracteres
-//                                int currentLength = charSequence.length();
-//                                textViewContador2.setText(currentLength + "/20");
-//                            }
-//
-//                            @Override
-//                            public void afterTextChanged(Editable editable) {
-//                                // Nada a fazer depois da mudança do texto
-//                            }
-//                        });
-//
-//                        dialog.show();
-//                        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT , ViewGroup.LayoutParams.WRAP_CONTENT);
-//                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
                     }
                 }
             });
@@ -670,136 +319,94 @@ public class CustomAdapter extends BaseAdapter {
 
         }
 
-            if (isReminderSet[position]) {
-                try {
+        if (isReminderSet[position]) {
+            try {
 
-                    SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                    SimpleDateFormat targetFormat = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
+                SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                SimpleDateFormat targetFormat = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
 
-                    Calendar calendarDataAtual = Calendar.getInstance();
-                    calendarDataAtual.set(Calendar.SECOND, 0);
-                    calendarDataAtual.set(Calendar.HOUR_OF_DAY, 0);
-                    calendarDataAtual.set(Calendar.MINUTE, 0);
-                    Date calendardataAtual2 = calendarDataAtual.getTime();
+                Calendar calendarDataAtual = Calendar.getInstance();
+                calendarDataAtual.set(Calendar.SECOND, 0);
+                calendarDataAtual.set(Calendar.HOUR_OF_DAY, 0);
+                calendarDataAtual.set(Calendar.MINUTE, 0);
+                Date calendardataAtual2 = calendarDataAtual.getTime();
 
-                    Date date = originalFormat.parse(AgendaData[position]);
+                Date date = originalFormat.parse(AgendaData[position]);
 
-                    @SuppressLint({"NewApi", "LocalSuppress"})
-                    LocalDate LocaldatedataCombinada = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    @SuppressLint({"NewApi", "LocalSuppress"})
-                    LocalDate LocaldatedataAtual = LocalDate.now();
+                @SuppressLint({"NewApi", "LocalSuppress"})
+                LocalDate LocaldatedataCombinada = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                @SuppressLint({"NewApi", "LocalSuppress"})
+                LocalDate LocaldatedataAtual = LocalDate.now();
 
 
-                    Calendar calendarAtual = Calendar.getInstance();
-                    calendarAtual.set(Calendar.SECOND, 0);
-                    Date dataAtual = calendarAtual.getTime();
+                Calendar calendarAtual = Calendar.getInstance();
+                calendarAtual.set(Calendar.SECOND, 0);
+                Date dataAtual = calendarAtual.getTime();
 
-                    String horarioString = AgendaHora[position];
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                    Date horarioDate = sdf.parse(horarioString);
+                String horarioString = AgendaHora[position];
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                Date horarioDate = sdf.parse(horarioString);
 
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(date);
-                    calendar.add(Calendar.HOUR_OF_DAY, horarioDate.getHours());
-                    calendar.add(Calendar.MINUTE, horarioDate.getMinutes());
-                    Date dataHoraCombinada = calendar.getTime();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                calendar.add(Calendar.HOUR_OF_DAY, horarioDate.getHours());
+                calendar.add(Calendar.MINUTE, horarioDate.getMinutes());
+                Date dataHoraCombinada = calendar.getTime();
 
-                    boolean repetirLembreteBL = getRepetirLembrete(position);
+                boolean repetirLembreteBL = getRepetirLembrete(position);
 
-                    // Verifique se a data da agenda é amanhã em relação à data atual
-                    Calendar currentCalendar = Calendar.getInstance();
-                    if (calendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR) &&
-                            calendar.get(Calendar.DAY_OF_YEAR) == currentCalendar.get(Calendar.DAY_OF_YEAR) + 1) {
-                        text_view_dat_agenda.setText("Amanhã");
+                // Verifique se a data da agenda é amanhã em relação à data atual
+                Calendar currentCalendar = Calendar.getInstance();
+                if (calendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR) &&
+                        calendar.get(Calendar.DAY_OF_YEAR) == currentCalendar.get(Calendar.DAY_OF_YEAR) + 1) {
+                    text_view_dat_agenda.setText("Amanhã");
 
-                    } else if (dataHoraCombinada.before(dataAtual) && LocaldatedataAtual.isEqual(LocaldatedataCombinada) && !repetirLembreteBL) {
+                } else if (dataHoraCombinada.before(dataAtual) && LocaldatedataAtual.isEqual(LocaldatedataCombinada) && !repetirLembreteBL) {
 
-                        AgendaDAO agendaDAO = new AgendaDAO(context);
-                        long idTarefa = AgendaID.get(position);
+                    AgendaDAO agendaDAO = new AgendaDAO(context);
+                    long idTarefa = AgendaID.get(position);
 
-                        String formattedDate = targetFormat.format(date);
-                        text_view_dat_agenda.setText(formattedDate);
-                        Drawable DrawableClock = ContextCompat.getDrawable(context, R.drawable.baseline_schedule_24_red);
-                        text_view_hr_agenda.setCompoundDrawablesWithIntrinsicBounds(DrawableClock, null, null, null);
-                        imageViewBarra.setImageResource(R.drawable.removeorange);
+                    String formattedDate = targetFormat.format(date);
+                    text_view_dat_agenda.setText(formattedDate);
+                    Drawable DrawableClock = ContextCompat.getDrawable(context, R.drawable.baseline_schedule_24_red);
+                    text_view_hr_agenda.setCompoundDrawablesWithIntrinsicBounds(DrawableClock, null, null, null);
+                    imageViewBarra.setImageResource(R.drawable.removeorange);
 
-                        boolean statusAgenda = agendaDAO.AtualizarStatusAtraso(idTarefa, 1);
+                    boolean statusAgenda = agendaDAO.atualizarTarefaPendente(idTarefa, 1);
 
-                        if(statusAgenda) {
-                            notifyDataSetChanged();
-                        }
+                } else if (LocaldatedataAtual.isAfter(LocaldatedataCombinada) && !repetirLembreteBL) {
 
-                    } else if (LocaldatedataAtual.isAfter(LocaldatedataCombinada) && !repetirLembreteBL) {
+                    AgendaDAO agendaDAO = new AgendaDAO(context);
+                    long idTarefa = AgendaID.get(position);
 
-                        String formattedDate = targetFormat.format(date);
-                        text_view_dat_agenda.setText(formattedDate);
-                        Drawable seuDrawable = ContextCompat.getDrawable(context, R.drawable.baseline_calendar_month_24_red);
-                        text_view_dat_agenda.setCompoundDrawablesWithIntrinsicBounds(seuDrawable, null, null, null);
-                        Drawable seuDrawable1 = ContextCompat.getDrawable(context, R.drawable.baseline_schedule_24_red2);
-                        text_view_hr_agenda.setCompoundDrawablesWithIntrinsicBounds(seuDrawable1, null, null, null);
-                        imageViewBarra.setImageResource(R.drawable.removered);
+                    String formattedDate = targetFormat.format(date);
+                    text_view_dat_agenda.setText(formattedDate);
+                    Drawable seuDrawable = ContextCompat.getDrawable(context, R.drawable.baseline_calendar_month_24_red);
+                    text_view_dat_agenda.setCompoundDrawablesWithIntrinsicBounds(seuDrawable, null, null, null);
+                    Drawable seuDrawable1 = ContextCompat.getDrawable(context, R.drawable.baseline_schedule_24_red2);
+                    text_view_hr_agenda.setCompoundDrawablesWithIntrinsicBounds(seuDrawable1, null, null, null);
+                    imageViewBarra.setImageResource(R.drawable.removered);
 
-                    } else if (LocaldatedataAtual.isEqual(LocaldatedataCombinada) || LocaldatedataAtual.isBefore(LocaldatedataCombinada)) {
+                    boolean statusAgenda = agendaDAO.atualizarTarefaPendente(idTarefa, 2);
 
-                        String formattedDate = targetFormat.format(date);
-                        text_view_dat_agenda.setText(formattedDate);
-                    }
+                } else if (LocaldatedataAtual.isEqual(LocaldatedataCombinada) || LocaldatedataAtual.isBefore(LocaldatedataCombinada)) {
 
-                    int repetirLembreteModo2 = getRepetirModoLembrete(position);
-                    boolean notificouTarefaBL = getNotificouTarefa(position);
-
-//                    if(repetirLembreteModo2==1 && notificouTarefaBL) {
-//
-//                        Calendar calendarDate = Calendar.getInstance();
-//                        calendarDate.setTime(date);
-//                        calendarDate.add(Calendar.DAY_OF_YEAR, 1); // Adiciona 1 dia
-//                        Date newDate = calendarDate.getTime();
-//
-//                        String formattedDate = targetFormat.format(newDate);
-//                        text_view_dat_agenda.setText(formattedDate);
-//
-//                        AgendaDAO agendaDAO = new AgendaDAO(context);
-//                        agendaDAO.AtualizarStatusNotificacao(getItemId(position), 0);
-//
-//                    }else if(repetirLembreteModo2==2 && notificouTarefaBL) {
-//
-//                        Calendar calendarDate = Calendar.getInstance();
-//                        calendarDate.setTime(date);
-//                        calendarDate.add(Calendar.WEEK_OF_YEAR, 1);
-//                        Date newDate = calendarDate.getTime();
-//
-//                        String formattedDate = targetFormat.format(newDate);
-//                        text_view_dat_agenda.setText(formattedDate);
-//
-//                        AgendaDAO agendaDAO = new AgendaDAO(context);
-//                        agendaDAO.AtualizarStatusNotificacao(getItemId(position), 0);
-//
-//                    }else if(repetirLembreteModo2==3 && notificouTarefaBL) {
-//
-//                        Calendar calendarDate = Calendar.getInstance();
-//                        calendarDate.setTime(date);
-//                        calendarDate.add(Calendar.MONTH, 1);
-//                        Date newDate = calendarDate.getTime();
-//
-//                        String formattedDate = targetFormat.format(newDate);
-//                        text_view_dat_agenda.setText(formattedDate);
-//
-//                        AgendaDAO agendaDAO = new AgendaDAO(context);
-//                        agendaDAO.AtualizarStatusNotificacao(getItemId(position), 0);
-//
-//                    }
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                    String formattedDate = targetFormat.format(date);
+                    text_view_dat_agenda.setText(formattedDate);
                 }
-                text_view_hr_agenda.setText(AgendaHora[position]);
-            } else {
-                text_view_dat_agenda.setVisibility(View.GONE);
-                text_view_hr_agenda.setVisibility(View.GONE);
-            }
 
-            return convertView;
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            text_view_hr_agenda.setText(AgendaHora[position]);
+        } else {
+            text_view_dat_agenda.setVisibility(View.GONE);
+            text_view_hr_agenda.setVisibility(View.GONE);
         }
+
+        return convertView;
+    }
 
 
 

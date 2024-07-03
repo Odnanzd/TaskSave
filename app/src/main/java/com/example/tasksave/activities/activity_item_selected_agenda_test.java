@@ -105,12 +105,12 @@ public class activity_item_selected_agenda_test extends AppCompatActivity {
         textViewData = findViewById(R.id.textView5);
         textViewHora = findViewById(R.id.textView6);
         textViewRepetir = findViewById(R.id.textView12);
-        linearLayoutData = findViewById(R.id.linearLayout5);
-        linearLayoutHora = findViewById(R.id.linearLayout7);
-        linearLayoutRepetir = findViewById(R.id.linearLayout9);
+        linearLayoutData = findViewById(R.id.linearLayout4);
+        linearLayoutHora = findViewById(R.id.linearLayout6);
+        linearLayoutRepetir = findViewById(R.id.linearLayout8);
         imageViewBack = findViewById(R.id.imageView4);
         imageViewCheck = findViewById(R.id.imageViewCheck);
-        linearLayoutDefinirLembrete = findViewById(R.id.linearLayout2);
+        linearLayoutDefinirLembrete = findViewById(R.id.linearLayout3);
         imageViewSalvar  = findViewById(R.id.imageViewCheck);
 
 
@@ -241,17 +241,25 @@ public class activity_item_selected_agenda_test extends AppCompatActivity {
         imageViewBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                if(checkForChanges()) {
+                    cancelarAtt();
+                }else {
+                    finish();
+                }
             }
         });
         aswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+
                 if (isChecked) {
+
                     textViewHora.setVisibility(View.VISIBLE);
                     textViewData.setVisibility(View.VISIBLE);
                     checkForChanges();
+
                 } else {
+
                     textViewHora.setVisibility(View.GONE);
                     textViewData.setVisibility(View.GONE);
                     checkForChanges();
@@ -320,8 +328,9 @@ public class activity_item_selected_agenda_test extends AppCompatActivity {
         if(aswitch.isChecked()) {
 
             if ((text1Changed || text2Changed || switchChanged || dateChanged || hourChanged || repeaterChanged)
-                    && localdataEscolhida != null && hourTarefa != 0 && minuteTarefa != 0 &&
+                    && localdataEscolhida != null && hourTarefa != 0 &&
                     !editTextTitulo.getText().toString().equals("") && !editTextDesc.getText().toString().equals("")) {
+
 
                 imageViewCheck.setVisibility(View.VISIBLE);
                 return true;
@@ -335,7 +344,7 @@ public class activity_item_selected_agenda_test extends AppCompatActivity {
             }
         }else {
 
-            if ((text1Changed || text2Changed || switchChanged || dateChanged || hourChanged || repeaterChanged) &&
+            if ((text1Changed || text2Changed || switchChanged ) &&
                     !editTextTitulo.getText().toString().equals("") && !editTextDesc.getText().toString().equals("")) {
 
                 imageViewCheck.setVisibility(View.VISIBLE);
@@ -445,6 +454,8 @@ public class activity_item_selected_agenda_test extends AppCompatActivity {
 
                 hourTarefa = hourOfDay;
                 minuteTarefa = minute;
+
+                Log.d("TESTE HORA", "MINUTO: "+minuteTarefa);
 
                 isHourPickerShown = false;
 
@@ -593,7 +604,7 @@ public class activity_item_selected_agenda_test extends AppCompatActivity {
                     Calendar calendar2 = convertToCalendar(localdataEscolhida, hourTarefa, minuteTarefa);
 
                     agendaDAO.atualizarAll(idTarefa, textViewTitAtt, textViewDescAtt, localdataEscolhida, hourTarefa, minuteTarefa,
-                            1, 0, 0);
+                            1, 0, 0, 0);
                     AlarmScheduler.cancelAlarm(getApplicationContext(), idTarefa);
 
                     AlarmScheduler.scheduleAlarm(getApplicationContext(), calendar2.getTimeInMillis(), textViewTitAtt,
@@ -606,14 +617,13 @@ public class activity_item_selected_agenda_test extends AppCompatActivity {
                     Calendar calendar2 = convertToCalendar(localdataEscolhida, hourTarefa, minuteTarefa);
 
                     agendaDAO.atualizarAll(idTarefa, textViewTitAtt, textViewDescAtt, localdataEscolhida, hourTarefa, minuteTarefa,
-                            1, 1, repetirModoLembrete);
+                            1, 1, repetirModoLembrete, 0);
 
                     AlarmScheduler.cancelAlarm(getApplicationContext(), idTarefa);
 
                     AlarmScheduler.scheduleAlarm(getApplicationContext(), calendar2.getTimeInMillis(), textViewTitAtt,
                             textViewDescAtt, repetirModoLembrete, idTarefa, localdataEscolhida);
 
-                    Log.d("Repetir modo", "REPETIR MODO LEMBRETE: " + repetirModoLembrete);
 
                     finish();
                 }

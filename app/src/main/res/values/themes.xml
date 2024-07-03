@@ -8,10 +8,54 @@
     <style name="Theme.TaskSave" parent="Base.Theme.TaskSave" />
 
     <style name="BackgroundTheme">
+        <item name="android:background">@color/blue17</item>
+    </style>
+    <style name="BackgroundTheme2">
         <item name="android:background">@color/white</item>
     </style>
+    <style name="BackgroundThemeMenu2">
+        <item name="android:background">@drawable/bottom_background_main</item>
+    </style>
+
+    <style name="BackgroundCardViewAgenda">
+        <item name="cardBackgroundColor">@color/brancoGelo</item>
+    </style>
+
     <style name="BackgroundThemeMenu">
         <item name="android:background">@drawable/background_main_menu_itens</item>
+    </style>
+    <style name="BackgroundThemePendente">
+        <item name="android:background">@drawable/banner_background</item>
+    </style>
+    <style name="Menu_Main_Item_2">
+        <item name="android:background">@drawable/button_menu_background</item>
+    </style>
+    <style name="BackGroundButtonItemSelected">
+        <item name="android:background">@drawable/backgroung_button_item_selected</item>
+    </style>
+    <style name="IconAgenda">
+        <item name="android:src">@drawable/icon_agenda</item>
+    </style>
+    <style name="IconCalendar">
+        <item name="android:src">@drawable/icon_calendar</item>
+    </style>
+    <style name="IconPassword">
+        <item name="android:src">@drawable/icon_password</item>
+    </style>
+    <style name="IconEngre">
+        <item name="android:src">@drawable/icon_engre</item>
+    </style>
+    <style name="IconLogout">
+        <item name="android:src">@drawable/icon_logout</item>
+    </style>
+    <style name="IconFile">
+        <item name="android:src">@drawable/icon_file2</item>
+    </style>
+    <style name="TextDarkMain">
+        <item name="android:textColor">@color/blue19</item>
+    </style>
+    <style name="Text2DarkMain">
+        <item name="android:textColor">@color/black</item>
     </style>
     <style name="BackgroundThemeAddAgendaDialog">
         <item name="android:background">@drawable/background_add_agenda_dialog_claro</item>
@@ -20,57 +64,14 @@
         <item name="android:background">@drawable/background_dialog_repeat_reminder_light</item>
     </style>
 
-
-    <style name="BackGroundTintThemeButton">
-        <item name="android:backgroundTint">@color/black1</item>
-    </style>
-
-    <style name="TextColorTheme">
-        <item name="android:textColor">@color/blue1</item>
-    </style>
     <style name="TextColorAddAgenda">
         <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="BackGroundTintThemeButton2">
-        <item name="android:backgroundTint">@color/red1</item>
-    </style>
-    <style name="TextColorTheme2">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="BackgroundFingerPrint">
-        <item name="android:tint">@color/blue9</item>
     </style>
 
     <style name="TextColorTheme3">
         <item name="android:textColor">@color/grey5</item>
     </style>
 
-    <style name="BackgroundThemeItens">
-        <item name="android:color">@color/blue5</item>
-    </style>
-    <style name="BackGroundMainMenu">
-        <item name="android:background">@drawable/background_add_agenda</item>
-    </style>
-    <style name="ButtonColorTheme">
-        <item name="backgroundTint">@color/rosa</item>
-        <item name="android:textColor">@color/black</item>
-    </style>
-    <style name="ButtonColorTheme2">
-        <item name="backgroundTint">@color/rosa2</item>
-        <item name="android:textColor">@color/black</item>
-    </style>
-    <style name="ButtonColorTheme3">
-        <item name="backgroundTint">@color/rosa3</item>
-        <item name="android:textColor">@color/black</item>
-    </style>
-
-    <color name="textColorLight">@android:color/black</color>
-
-    <style name="ListViewText.Light" parent="android:TextAppearance">
-        <item name="android:textColor">@color/black</item>
-    </style>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light">
 
@@ -80,33 +81,7 @@
         <!-- Defina outras propriedades do tema para o modo noturno aqui -->
         <item name="android:textColor">@color/white</item>
     </style>
-    <style name="AppTheme3" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- ... outras definições de estilo ... -->
-        <item name="colorAccent">@color/rosa2</item>
-    </style>
 
-    <style name="AppTheme.FabStyle" parent="Widget.MaterialComponents.FloatingActionButton">
-        <item name="backgroundTint">@color/rosa2</item>
-    </style>
-    <style name="AppTheme4" parent="Theme.AppCompat">
-        <!-- ... outras definições de estilo ... -->
-        <item name="colorAccent">@color/rosa2</item>
-    </style>
-
-    <style name="AppTheme.FabStyle2" parent="Widget.MaterialComponents.FloatingActionButton">
-        <item name="backgroundTint">@color/rosa</item>
-    </style>
-
-    <style name="InputButton">
-        <item name="android:background">@drawable/input_button</item>
-    </style>
-
-    <style name="IconLogin">
-        <item name="android:src">@drawable/baseline_person_24_night</item>
-    </style>
-    <style name="LogoTipo">
-        <item name="android:src">@drawable/logotiporosa3</item>
-    </style>
     <style name="Menu_Main_Item">
         <item name="android:src">@drawable/teste_quadrado_claro</item>
     </style>
@@ -131,21 +106,7 @@
     <style name="ImageProfileMain">
         <item name="android:src">@drawable/profile2</item>
     </style>
-    <style name="Background_add_agenda_data">
-        <item name="android:background">@drawable/background_add_agenda_data</item>
-    </style>
-    <style name="CalendarTheme">
 
-        <!-- Cor dos dias no mês no CalendarView -->
-        <item name="android:dateTextAppearance">@style/CalendarDateText</item>
-    </style>
-    <style name="CalendarDateText">
-        <!-- Cor dos dias no mês -->
-        <item name="android:textColor">@color/white</item>
-    </style>
-    <style name="BackgroundThemeHora">
-        <item name="android:background">@drawable/backgroud_add_agenda_hora</item>
-    </style>
 
     <style name="ButtonSelector">
         <item name="android:background">@drawable/button_colors_light</item>
@@ -154,29 +115,16 @@
         <item name="android:background">@drawable/button_colors_light_2</item>
     </style>
 
-    <style name="TimePickerTheme">
-        <!-- Outros atributos de estilo que você deseja definir -->
 
-        <!-- Cor de fundo do TimePicker -->
-        <item name="android:background">@color/rosa2</item>
-
-        <!-- Cor dos números e marcadores no TimePicker -->
-        <item name="android:numbersTextColor">@color/white</item>
-    </style>
-    <style name="UpdateDetailsItem">
-        <item name="android:background">@drawable/update_details_item</item>
-    </style>
     <style name="IconTaskFinalizadas">
         <item name="android:background">@drawable/baseline_task_24_pink</item>
     </style>
-    <style name="Back_Button_Item">
-        <item name="android:src">@drawable/baseline_arrow_back_ios_new_24</item>
-    </style>
+
     <style name="Back_Button_Item2">
         <item name="android:src">@drawable/icon_back</item>
     </style>
     <style name="BackGroundTintThemeItens">
-        <item name="android:backgroundTint">@color/blue9</item>
+        <item name="android:backgroundTint">@color/blue17</item>
     </style>
     <style name="BackgroundThemeAddAgenda">
         <item name="android:background">@drawable/background_add_agenda_dialog_claro</item>
@@ -241,9 +189,7 @@
     <style name="ImageViewConfigBell">
         <item name="android:src">@drawable/bell_icon_svg</item>
     </style>
-    <style name="ImageViewConfigLinha">
-        <item name="android:src">@drawable/linha_horizontal</item>
-    </style>
+
     <style name="ImageViewIconEmail">
         <item name="android:src">@drawable/mail_icon_svg</item>
     </style>
@@ -259,5 +205,8 @@
 
     <style name="DialogAnimation">
         <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
+    </style>
+    <style name="IconDelete">
+        <item name="android:src">@drawable/icon_delete</item>
     </style>
 </resources>

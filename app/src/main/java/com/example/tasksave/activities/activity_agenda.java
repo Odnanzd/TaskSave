@@ -43,6 +43,7 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.tasksave.conexaoSQLite.Conexao;
@@ -74,10 +75,12 @@ public class activity_agenda extends AppCompatActivity implements CustomAdapter.
     ImageView imageView;
     ImageView imageView2;
     ImageView imageView3;
-    ImageView imageViewFundoLista;
     ImageView imageViewBalao;
     ArrayList<Long> listaIDs = new ArrayList<>();
     ArrayList<Integer> repetirModoLembrete2 = new ArrayList<>();
+
+    CardView cardViewPendents, cardViewTodos, cardViewAtrasados;
+    private boolean clickTodos, clickPendentes, clickAtradasados;
 
     private SwipeRefreshLayout swipeRefreshLayout;
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -85,7 +88,7 @@ public class activity_agenda extends AppCompatActivity implements CustomAdapter.
     @Override
     public void onBackPressed() {
 
-        Intent intent = new Intent(activity_agenda.this, activity_main.class);
+        Intent intent = new Intent(activity_agenda.this, activity_main_test.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -102,18 +105,26 @@ public class activity_agenda extends AppCompatActivity implements CustomAdapter.
         imageView = findViewById(R.id.icon_concluido);
         imageView2 = findViewById(R.id.imageView4);
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
-        imageViewFundoLista = findViewById(R.id.imageViewLista);
         imageViewBalao = findViewById(R.id.imageViewBalaoFala);
 
+        cardViewPendents = findViewById(R.id.cardViewPendentes);
+        cardViewTodos = findViewById(R.id.cardViewTodos);
+        cardViewAtrasados = findViewById(R.id.cardViewAtrasados);
+
+        clickTodos = true;
+        clickPendentes = false;
+        clickAtradasados = false;
+
         VerificaLista();
-        ListarAgenda();
+//        ListarAgenda();
+        checkChanges(listaIDs, repetirModoLembrete2, this, listView);
 //        VerificaAgendaComLembretes();
 
 
         imageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity_agenda.this, activity_main.class);
+                Intent intent = new Intent(activity_agenda.this, activity_main_test.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -139,6 +150,77 @@ public class activity_agenda extends AppCompatActivity implements CustomAdapter.
 
             }
         });
+
+        cardViewTodos.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                clickTodos=true;
+                clickPendentes=false;
+                clickAtradasados=false;
+                checkChanges(listaIDs, repetirModoLembrete2, activity_agenda.this, listView);
+            }
+        });
+
+        cardViewPendents.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                clickPendentes=true;
+                clickTodos=false;
+                clickAtradasados=false;
+                checkChanges(listaIDs, repetirModoLembrete2, activity_agenda.this, listView);
+
+            }
+        });
+
+        cardViewAtrasados.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickAtradasados=true;
+                clickPendentes=false;
+                clickTodos=false;
+                checkChanges(listaIDs, repetirModoLembrete2, activity_agenda.this, listView);
+            }
+        });
+
+
+
+    }
+
+    @SuppressLint("NewApi")
+    public void checkChanges(ArrayList<Long> listaIDs2, ArrayList<Integer> repetirModoLembrete3, Context context2, ListView listView1) {
+
+        AgendaDAO agendaDAO = new AgendaDAO(activity_agenda.this);
+
+        if(clickTodos) {
+
+            cardViewTodos.setCardBackgroundColor(getResources().getColor(R.color.blue16));
+            cardViewPendents.setCardBackgroundColor(getResources().getColor(R.color.brancoGelo));
+            cardViewAtrasados.setCardBackgroundColor(getResources().getColor(R.color.brancoGelo));
+            ListarAgenda();
+
+        }else if(clickPendentes) {
+
+            cardViewPendents.setCardBackgroundColor(getResources().getColor(R.color.blue16));
+            cardViewTodos.setCardBackgroundColor(getResources().getColor(R.color.brancoGelo));
+            cardViewAtrasados.setCardBackgroundColor(getResources().getColor(R.color.brancoGelo));
+
+            agendaDAO.listarAgendaPendentes(listaIDs2, repetirModoLembrete3, context2, listView1);
+
+        }else if(clickAtradasados) {
+
+            cardViewAtrasados.setCardBackgroundColor(getResources().getColor(R.color.blue16));
+            cardViewTodos.setCardBackgroundColor(getResources().getColor(R.color.brancoGelo));
+            cardViewPendents.setCardBackgroundColor(getResources().getColor(R.color.brancoGelo));
+            Log.d("TESTE ELSE IF", "TESTE CLICK ATRASADOS");
+            agendaDAO.listarAgendaAtraso(listaIDs2, repetirModoLembrete3, context2, listView1);
+
+        }
+
+
 
     }
 
@@ -443,7 +525,7 @@ public class activity_agenda extends AppCompatActivity implements CustomAdapter.
 
                         Agenda agenda = new Agenda(-1, editNome.getText().toString(), editDescricao.getText().toString(),
                                 localdataEscolhida, horaEscolhida, minutoEscolhido, true, false, dataAtual,
-                                -1, -1, dataAtual,horasInsert ,minutosInsert, false,
+                                -1, -1, dataAtual,horasInsert ,minutosInsert, 0,
                                 repetirLembreteDB, repetirLembreteModoDB, false);
 
                         if (localdataEscolhida.isEqual(dataAtual) && horaCompletaEscolhida<horaCompleta) {
@@ -519,7 +601,7 @@ public class activity_agenda extends AppCompatActivity implements CustomAdapter.
 
                         Agenda agenda = new Agenda(-1, editNome.getText().toString(), editDescricao.getText().toString(),
                                 dataAtual, -1, -1, false, false, dataAtual,
-                                -1, -1, dataAtual, horasInsert, minutosInsert, false, false, 0,
+                                -1, -1, dataAtual, horasInsert, minutosInsert, 0, false, 0,
                                 false);
 
                         long idSequencial = agendaDAO.inserir(agenda);
@@ -657,30 +739,6 @@ public class activity_agenda extends AppCompatActivity implements CustomAdapter.
 
     }
 
-    public void VerificaAgendaComLembretes() {
-
-//        con = new Conexao(this);
-//        db = con.getWritableDatabase();
-//
-//        Cursor cursor = db.rawQuery("SELECT lembretedefinido FROM agenda WHERE lembretedefinido = 1;", null);
-//
-//        Log.d("Verificação cursor DB", "Numero de lembretes = " + cursor.getCount());
-        AgendaDAO agendaDAO = new AgendaDAO(activity_agenda.this);
-        @SuppressLint({"NewApi", "LocalSuppress"})
-        List<Agenda> agendasComLembrete = agendaDAO.obterTarefasComLembreteAtivado();
-
-        for (Agenda tarefa : agendasComLembrete) {
-
-            Log.d("TAREFA", "titulo: "+tarefa.getNomeAgenda());
-            Log.d("TAREFA", "DESCRICAO: "+tarefa.getDescriçãoAgenda());
-            Log.d("TAREFA", "REPETIR MODO: "+tarefa.getRepetirModo());
-            Log.d("TAREFA", "ID: "+tarefa.getId());
-            Log.d("TAREFA", "Data: "+tarefa.getDate());
-            Log.d("TAREFA", "Millis: "+tarefa.getDateTimeInMillis());
-
-        }
-
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void ListarAgenda() {
@@ -725,7 +783,6 @@ public class activity_agenda extends AppCompatActivity implements CustomAdapter.
                 int minutoAgendaInsert = cursor.getInt(cursor.getColumnIndex("minutoAgendaInsert"));
                 @SuppressLint("Range")
                 int agendaAtrasoDB = cursor.getInt(cursor.getColumnIndex("agendaAtraso"));
-                boolean agendaAtraso = (agendaAtrasoDB != 0);
                 @SuppressLint("Range")
                 int repetirLembreteDB = cursor.getInt(cursor.getColumnIndex("repetirLembrete"));
                 boolean repetirLembrete = (repetirLembreteDB != 0);
@@ -742,7 +799,7 @@ public class activity_agenda extends AppCompatActivity implements CustomAdapter.
 
                 listaagenda.add(new Agenda(ID, titulo, descricao, localdataagenda, horaagenda, minutoagenda,
                         lembrete, finalizado, localdataagendaFim, horaAgendaFim, minutoAgendaFim, localdataagendaInsert,
-                        horaAgendaInsert, minutoAgendaInsert, agendaAtraso, repetirLembrete, repetirLembreteModo, notificouTarefa));
+                        horaAgendaInsert, minutoAgendaInsert, agendaAtrasoDB, repetirLembrete, repetirLembreteModo, notificouTarefa));
                 listaIDs.add(ID);
                 repetirModoLembrete2.add(repetirLembreteModo);
 
@@ -838,10 +895,14 @@ public class activity_agenda extends AppCompatActivity implements CustomAdapter.
 
 
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 // Atualize a exibição dos checkboxes em todos os itens da lista
                 Log.d("Verificação On item", "Teste");
+                AgendaDAO agendaDAO = new AgendaDAO(activity_agenda.this);
+
 
                 customAdapter.setShowCheckboxes(!customAdapter.isShowCheckboxes());
                 listView.clearChoices(); // Limpa as seleções anteriores
@@ -849,54 +910,57 @@ public class activity_agenda extends AppCompatActivity implements CustomAdapter.
 
                 if(customAdapter.isShowCheckboxes()) {
 
-                    CheckBox checkBox2 = findViewById(R.id.checkBox);
-                    checkBox2.setVisibility(View.VISIBLE);
+                    if (agendaDAO.hasTwoOrMoreTasks()) {
 
-                    checkBox2.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            boolean isChecked = checkBox2.isChecked();
-                            customAdapter.selectAllItems(isChecked);
-                        }
-                    });
+                        CheckBox checkBox2 = findViewById(R.id.checkBox);
+                        checkBox2.setVisibility(View.VISIBLE);
 
-
-                    checkBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            // Percorre todos os itens na lista e define o estado da checkbox para cada um deles
-                            if (isChecked) {
-
-                                for (int i = 0; i < listView.getAdapter().getCount(); i++) {
-                                    View itemView = listView.getChildAt(i);
-                                    CheckBox checkBoxItem = itemView.findViewById(R.id.checkbox1);
-                                    checkBoxItem.setChecked(isChecked);
-                                }
-
-                                // Notifica o adaptador sobre as mudanças
-                                ((CustomAdapter) listView.getAdapter()).setShowCheckboxes(isChecked);
-                                ((CustomAdapter) listView.getAdapter()).notifyDataSetChanged();
-
-                            } else {
-
-                                for (int i = 0; i < listView.getAdapter().getCount(); i++) {
-                                    View itemView = listView.getChildAt(i);
-                                    CheckBox checkBoxItem = itemView.findViewById(R.id.checkbox1);
-                                    checkBoxItem.setChecked(false);
-                                }
-
-                                // Notifica o adaptador sobre as mudanças
-                                ((CustomAdapter) listView.getAdapter()).setShowCheckboxes(true);
-                                ((CustomAdapter) listView.getAdapter()).notifyDataSetChanged();
+                        checkBox2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                boolean isChecked = checkBox2.isChecked();
+                                customAdapter.selectAllItems(isChecked);
                             }
-                        }
-                    });
+                        });
+                        checkBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                // Percorre todos os itens na lista e define o estado da checkbox para cada um deles
+                                if (isChecked) {
 
-                } else {
+                                    for (int i = 0; i < listView.getAdapter().getCount(); i++) {
+                                        View itemView = listView.getChildAt(i);
+                                        CheckBox checkBoxItem = itemView.findViewById(R.id.checkbox1);
+                                        checkBoxItem.setChecked(isChecked);
+                                    }
+
+                                    // Notifica o adaptador sobre as mudanças
+                                    ((CustomAdapter) listView.getAdapter()).setShowCheckboxes(isChecked);
+                                    ((CustomAdapter) listView.getAdapter()).notifyDataSetChanged();
+
+                                } else {
+
+                                    for (int i = 0; i < listView.getAdapter().getCount(); i++) {
+                                        View itemView = listView.getChildAt(i);
+                                        CheckBox checkBoxItem = itemView.findViewById(R.id.checkbox1);
+                                        checkBoxItem.setChecked(false);
+                                    }
+
+                                    // Notifica o adaptador sobre as mudanças
+                                    ((CustomAdapter) listView.getAdapter()).setShowCheckboxes(true);
+                                    ((CustomAdapter) listView.getAdapter()).notifyDataSetChanged();
+                                }
+                            }
+                        });
+
+                    }
+                }else {
                     CheckBox checkBox2 = findViewById(R.id.checkBox);
                     checkBox2.setVisibility(View.GONE);
                     checkBox2.setChecked(false);
                 }
+
+
                 return true; // Indica que o evento de clique longo foi tratado
 
             }
