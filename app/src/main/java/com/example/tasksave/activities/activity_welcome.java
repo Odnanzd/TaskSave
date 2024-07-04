@@ -46,14 +46,14 @@ public class activity_welcome extends AppCompatActivity{
 
     @SuppressLint("MissingInflatedId")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_welcome);
 
-        buttonEntrar = findViewById(R.id.buttonEntrar);
-        buttonCadastrar = findViewById(R.id.buttonCadastrar);
-        progressBar = findViewById(R.id.progressBar);
-        loadingOverlay = findViewById(R.id.loadingOverlay);
+            buttonEntrar = findViewById(R.id.buttonEntrar);
+            buttonCadastrar = findViewById(R.id.buttonCadastrar);
+            progressBar = findViewById(R.id.progressBar);
+            loadingOverlay = findViewById(R.id.loadingOverlay);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -68,92 +68,100 @@ public class activity_welcome extends AppCompatActivity{
         }
 
 
-        buttonEntrar.setOnClickListener(new View.OnClickListener() {
+            buttonEntrar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(activity_welcome.this, activity_login.class);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                }
+            });
+
+            buttonCadastrar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(activity_welcome.this, activity_cadastro.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                }
+            });
+
+        }
+        private class VerificaVersaoTask extends AsyncTask<Void, Void, VersaoAPP> {
             @Override
-            public void onClick(View v) {
+            protected void onPreExecute() {
+                super.onPreExecute();
+                // Mostra a barra de progresso antes de iniciar a tarefa
+                loadingOverlay.setVisibility(View.VISIBLE);
+                buttonEntrar.setVisibility(View.GONE);
+                buttonCadastrar.setVisibility(View.GONE);
 
-                Intent intent = new Intent(activity_welcome.this, activity_login.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
-        });
 
-        buttonCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(activity_welcome.this, activity_cadastro.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            protected VersaoAPP doInBackground(Void... voids) {
+                // Consulta ao banco de dados em segundo plano
+                return getVersionInfo();
             }
-        });
 
-    }
-    private class VerificaVersaoTask extends AsyncTask<Void, Void, VersaoAPP> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            // Mostra a barra de progresso antes de iniciar a tarefa
-            loadingOverlay.setVisibility(View.VISIBLE);
-            buttonEntrar.setVisibility(View.GONE);
-            buttonCadastrar.setVisibility(View.GONE);
+            @Override
+            protected void onPostExecute(VersaoAPP versaoAPP) {
+                super.onPostExecute(versaoAPP);
+                // Oculta a barra de progresso após a conclusão da tarefa
+                loadingOverlay.setVisibility(View.GONE);
+                buttonEntrar.setVisibility(View.VISIBLE);
+                buttonCadastrar.setVisibility(View.VISIBLE);
 
-        }
+                // Configura o ServicosATT com a versão obtida
+                String versaoAtual = obterVersaoAtual();
 
-        @Override
-        protected VersaoAPP doInBackground(Void... voids) {
-            // Consulta ao banco de dados em segundo plano
-            return getVersionInfo();
-        }
+                servicosATT = new ServicosATT(activity_welcome.this, versaoAtual, versaoAPP.getVersionDB());
 
-        @Override
-        protected void onPostExecute(VersaoAPP versaoAPP) {
-            super.onPostExecute(versaoAPP);
-            // Oculta a barra de progresso após a conclusão da tarefa
-            loadingOverlay.setVisibility(View.GONE);
-            buttonEntrar.setVisibility(View.VISIBLE);
-            buttonCadastrar.setVisibility(View.VISIBLE);
+                boolean sucesso = servicosATT.verificaAtt();
 
-            // Configura o ServicosATT com a versão obtida
-            String versaoAtual = obterVersaoAtual();
+                if(sucesso) {
 
-            servicosATT = new ServicosATT(activity_welcome.this, versaoAtual, versaoAPP.getVersionDB());
+                    servicosATT.dialogAtt(versaoAPP.getVersionTextApp(), versaoAPP.getVersionText1(), versaoAPP.getVersionText2(), versaoAPP.getVersionText3());
 
-            boolean sucesso = servicosATT.verificaAtt();
-
-            if(sucesso) {
-
-                servicosATT.dialogAtt(versaoAPP.getVersionTextApp(), versaoAPP.getVersionText1(), versaoAPP.getVersionText2(), versaoAPP.getVersionText3());
-
+                }
             }
         }
-    }
 
-    public VersaoAPP getVersionInfo() {
-        try {
-            usuarioDAOMYsql usuarioDAOMYsql = new usuarioDAOMYsql();
-            String versaoDBApp = String.valueOf(usuarioDAOMYsql.getVersionAPP());
-            String versaoTextoAPP = usuarioDAOMYsql.getTextoVersaoAPP();
-            String versaoTexto1 = usuarioDAOMYsql.getTexto1APP();
-            String versaoTexto2 = usuarioDAOMYsql.getTexto2APP();
-            String versaoTexto3 = usuarioDAOMYsql.getTexto3APP();
+        public VersaoAPP getVersionInfo() {
+            try {
+                usuarioDAOMYsql usuarioDAOMYsql = new usuarioDAOMYsql();
+                String versaoDBApp = String.valueOf(usuarioDAOMYsql.getVersionAPP());
+                String versaoTextoAPP = usuarioDAOMYsql.getTextoVersaoAPP();
+                String versaoTexto1 = usuarioDAOMYsql.getTexto1APP();
+                String versaoTexto2 = usuarioDAOMYsql.getTexto2APP();
+                String versaoTexto3 = usuarioDAOMYsql.getTexto3APP();
 
-            return new VersaoAPP(versaoDBApp, versaoTextoAPP, versaoTexto1, versaoTexto2, versaoTexto3);
+                return new VersaoAPP(versaoDBApp, versaoTextoAPP, versaoTexto1, versaoTexto2, versaoTexto3);
 
-        } catch (Exception e) {
+            } catch (Exception e) {
 
-            Log.d("ERRO SQL AUT", "ERRO SQL" + e);
-            return new VersaoAPP("0.0", "Erro", "Erro", "Erro", "Erro");
-            // Retorne valores padrão em caso de erro
+                Log.d("ERRO SQL AUT", "ERRO SQL" + e);
+                return new VersaoAPP("0.0", "Erro", "Erro", "Erro", "Erro");
+                // Retorne valores padrão em caso de erro
+            }
         }
-    }
 
     private void verificarPermissoes() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+            } else {
+                new VerificaVersaoTask().execute();
+            }
         } else {
-            new VerificaVersaoTask().execute();
+            if (Environment.isExternalStorageManager()) {
+                new VerificaVersaoTask().execute();
+            } else {
+                Toast.makeText(this, "Permissão de acesso total ao armazenamento não concedida.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -164,7 +172,7 @@ public class activity_welcome extends AppCompatActivity{
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 new VerificaVersaoTask().execute();
             } else {
-                Log.e(TAG, "Permissão negada para escrever no armazenamento externo.");
+                Log.e("Permissão", "Permissão negada para escrever no armazenamento externo.");
                 Toast.makeText(this, "Permissão negada para escrever no armazenamento externo.", Toast.LENGTH_SHORT).show();
             }
         }
