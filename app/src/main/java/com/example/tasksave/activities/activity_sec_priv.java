@@ -1,7 +1,5 @@
 package com.example.tasksave.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,15 +7,21 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.tasksave.R;
 
-public class activity_config extends AppCompatActivity {
+public class activity_sec_priv extends AppCompatActivity {
+
+
     private ImageView imageViewBack;
-    private LinearLayout linearLayout, linearLayoutSecPriv;
+    private LinearLayout linearLayoutBiometria, linearLayoutSenha, linearLayoutPermissao;
+
     @SuppressLint("MissingSuperCall")
+    @Override
     public void onBackPressed() {
 
-        Intent intent = new Intent(activity_config.this, activity_main.class);
+        Intent intent = new Intent(activity_sec_priv.this, activity_config.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -26,34 +30,33 @@ public class activity_config extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_config);
+        setContentView(R.layout.activity_sec_priv);
 
-        imageViewBack = findViewById(R.id.imageView4);
-        linearLayout = findViewById(R.id.linearLayout2);
-        linearLayoutSecPriv = findViewById(R.id.linearLayoutSeg);
+        imageViewBack = findViewById(R.id.imageViewBack);
+        linearLayoutBiometria = findViewById(R.id.linearLayoutSeg);
+        linearLayoutPermissao = findViewById(R.id.linearLayoutNot);
 
         imageViewBack.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent2 = new Intent(activity_config.this, activity_main.class);
-                intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent2);
+            public void onClick(View view) {
+                Intent intent = new Intent(activity_sec_priv.this, activity_config.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
             }
         });
-        linearLayout.setOnClickListener(new View.OnClickListener() {
+        linearLayoutBiometria.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(activity_config.this, activity_confg_perfil.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            public void onClick(View view) {
+                Intent intent = new Intent(activity_sec_priv.this, activity_sec_fingerprint.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         });
-        linearLayoutSecPriv.setOnClickListener(new View.OnClickListener() {
+        linearLayoutPermissao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity_config.this, activity_sec_priv.class);
+                Intent intent = new Intent(activity_sec_priv.this, activity_sec_permissao.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }

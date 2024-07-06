@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -18,20 +17,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricManager;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.tasksave.conexaoSQLite.Conexao;
 import com.example.tasksave.R;
+import com.example.tasksave.dao.AgendaDAO;
 import com.example.tasksave.servicos.ServicosATT;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class activity_main extends AppCompatActivity {
     private ServicosATT servicosATT;
@@ -50,6 +58,14 @@ public class activity_main extends AppCompatActivity {
     private SQLiteDatabase db;
     public ImageView imageViewMenuConfig;
     public ImageView imageViewMenuCalendar;
+    private TextView textViewPendente;
+    private TextView textViewData;
+
+
+    private LinearLayout linearLayoutAgenda, linearLayoutCalendar, linearLayoutSenha,
+            linearLayoutArquivo, linearLayoutConfig, linearLayoutLogout;
+
+    private static final int PERMISSION_REQUEST_CODE = 1;
 
     @SuppressLint({"MissingInflatedId", "SetTextI18n"})
     @Override
@@ -57,17 +73,24 @@ public class activity_main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        imageView = findViewById(R.id.image_view_circle_agenda);
-        text_view_main = findViewById(R.id.textView);
-        imageView1 = findViewById(R.id.image_view_circle_logout);
-        imageView2 = findViewById(R.id.imageView2);
-        numeroIcon = findViewById(R.id.iconnumero);
-        imageViewMenuConfig = findViewById(R.id.image_view_circle_config);
-        imageViewMenuCalendar = findViewById(R.id.image_view_circle_calendar);
+        text_view_main = findViewById(R.id.textView21);
+
+        linearLayoutAgenda = findViewById(R.id.linearLayoutAgenda);
+        linearLayoutCalendar = findViewById(R.id.linearLayoutData);
+        linearLayoutSenha = findViewById(R.id.linearLayoutPassw);
+        linearLayoutArquivo = findViewById(R.id.linearLayoutArquiv);
+        linearLayoutConfig = findViewById(R.id.linearLayoutConfig);
+        linearLayoutLogout = findViewById(R.id.linearLayoutLogot);
+
+        textViewPendente = findViewById(R.id.textViewContador);
+        textViewData = findViewById(R.id.textView19);
+
+        dataAtualFormatada();
 
 
         ExibirUsername();
 //        VerificarAtrasos();
+        attContadorPendente();
         ChecarBiometria();
 
         SharedPreferences sharedPrefs2 = getApplicationContext().getSharedPreferences("ArquivoATT", Context.MODE_PRIVATE);
@@ -82,9 +105,10 @@ public class activity_main extends AppCompatActivity {
                 verificarPermissoes();
             }
         }
+        verificarPermissaoNotifica();
 
 
-        imageViewMenuConfig.setOnClickListener(new View.OnClickListener() {
+        linearLayoutConfig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intentConfig = new Intent(activity_main.this, activity_config.class);
@@ -94,7 +118,7 @@ public class activity_main extends AppCompatActivity {
             }
         });
 
-        imageView1.setOnClickListener(new View.OnClickListener() {
+        linearLayoutLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(activity_main.this, "Saindo...", Toast.LENGTH_SHORT).show();
@@ -102,8 +126,7 @@ public class activity_main extends AppCompatActivity {
             }
         });
 
-
-        imageView.setOnClickListener(new View.OnClickListener() {
+        linearLayoutAgenda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent2 = new Intent(activity_main.this, activity_agenda.class);
@@ -113,7 +136,8 @@ public class activity_main extends AppCompatActivity {
             }
         });
 
-        imageViewMenuCalendar.setOnClickListener(new View.OnClickListener() {
+
+        linearLayoutCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent2 = new Intent(activity_main.this, activity_calendar.class);
@@ -122,14 +146,14 @@ public class activity_main extends AppCompatActivity {
             }
         });
 
-        imageView2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
-            }
-        });
+//        imageView2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+//                galleryIntent.setType("image/*");
+//                startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
+//            }
+//        });
     }
     private void verificarPermissoes() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED ||
@@ -141,7 +165,7 @@ public class activity_main extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        VerificarAtrasos();
+//        VerificarAtrasos();
     }
 
     // Sobrescrever o método onActivityResult para tratar a imagem selecionada
@@ -183,60 +207,6 @@ public class activity_main extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "Pressione Voltar de novo para sair.", Toast.LENGTH_SHORT).show();
         }
         pressedTime = System.currentTimeMillis();
-    }
-    public void VerificarAtrasos() {
-
-        con = new Conexao(this);
-        db = con.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM agenda WHERE agendaAtraso = 1 AND finalizado = 0", null);
-
-        if (cursor.getCount() == 0) {
-
-            numeroIcon.setVisibility(View.GONE);
-
-        } else if (cursor.getCount() == 1) {
-
-            numeroIcon.setVisibility(View.VISIBLE);
-
-        } else if (cursor.getCount() == 2) {
-
-            numeroIcon.setImageResource(R.drawable.numero2icon);
-            numeroIcon.setVisibility(View.VISIBLE);
-
-        } else if (cursor.getCount() == 3) {
-
-            numeroIcon.setImageResource(R.drawable.numero3icon);
-            numeroIcon.setVisibility(View.VISIBLE);
-
-        } else if (cursor.getCount() == 4) {
-
-            numeroIcon.setImageResource(R.drawable.numero4icon);
-            numeroIcon.setVisibility(View.VISIBLE);
-        } else if (cursor.getCount() == 5) {
-
-            numeroIcon.setImageResource(R.drawable.numero5icon);
-            numeroIcon.setVisibility(View.VISIBLE);
-        } else if (cursor.getCount() == 6) {
-
-            numeroIcon.setImageResource(R.drawable.numero6icon);
-            numeroIcon.setVisibility(View.VISIBLE);
-
-        } else if (cursor.getCount() == 7) {
-
-            numeroIcon.setImageResource(R.drawable.numero7icon);
-            numeroIcon.setVisibility(View.VISIBLE);
-
-        } else if (cursor.getCount() == 8) {
-
-            numeroIcon.setImageResource(R.drawable.numero8icon);
-            numeroIcon.setVisibility(View.VISIBLE);
-        } else if (cursor.getCount() >= 9) {
-
-            numeroIcon.setImageResource(R.drawable.numero9icon);
-            numeroIcon.setVisibility(View.VISIBLE);
-
-        }
-
     }
 
     public void dialogFingerprint() {
@@ -307,7 +277,6 @@ public class activity_main extends AppCompatActivity {
         switch (manager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK |
                 BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
             case BiometricManager.BIOMETRIC_SUCCESS:
-                Log.d("Verificar Biometreia", "Sucesso");
                 dialogFingerprint();
                 break;
 
@@ -317,9 +286,60 @@ public class activity_main extends AppCompatActivity {
 
         SharedPreferences sharedPrefs2 = getApplicationContext().getSharedPreferences("ArquivoAttDisp", Context.MODE_PRIVATE);
 
+        SharedPreferences sharedPrefs3 = getApplicationContext().getSharedPreferences("ArquivoTextoAPP", Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs4 = getApplicationContext().getSharedPreferences("ArquivoTexto1", Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs5 = getApplicationContext().getSharedPreferences("ArquivoTexto2", Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs6 = getApplicationContext().getSharedPreferences("ArquivoTexto3", Context.MODE_PRIVATE);
+
+        String versaoTextoAPP = sharedPrefs3.getString("ATT", "");
+        String versaoTexto1 = sharedPrefs4.getString("ATT", "");
+        String versaoTexto2 = sharedPrefs5.getString("ATT", "");
+        String versaoTexto3 = sharedPrefs6.getString("ATT", "");
+
+
         if(sharedPrefs2.getBoolean("Atualizacao", false)) {
             servicosATT = new ServicosATT(activity_main.this, "1", "100");
-            boolean sucesso = servicosATT.verificaAtt();
+            servicosATT.dialogAtt(versaoTextoAPP, versaoTexto1, versaoTexto2, versaoTexto3);
+        }
+    }
+    public void attContadorPendente() {
+
+        AgendaDAO agendaDAO = new AgendaDAO(this);
+
+        String contador = agendaDAO.verificaTarefaPendente();
+
+        textViewPendente.setText(contador);
+
+    }
+    public void dataAtualFormatada() {
+        Date currentDate = Calendar.getInstance().getTime();
+
+        // Obtenha a locale atual do dispositivo
+        Locale currentLocale = Locale.getDefault();
+
+        // Formate a data conforme o idioma do telefone
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG, currentLocale);
+        String formattedDate = dateFormat.format(currentDate);
+
+        // Mostre a data formatada em um TextView (opcional)
+        textViewData.setText(formattedDate);
+    }
+    public void verificarPermissaoNotifica() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_REQUEST_CODE);
+            }
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permissão concedida, você pode enviar notificações
+            } else {
+                // Permissão negada, trate o caso adequadamente
+            }
         }
     }
 
