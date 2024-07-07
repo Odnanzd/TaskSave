@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.util.Log;
 
 import java.time.LocalDate;
-import java.util.Calendar;
 
 public class AlarmScheduler {
     @SuppressLint({"ScheduleExactAlarm", "NewApi"})

@@ -213,5 +213,8 @@
     <style name="IconSecPermission">
         <item name="android:src">@drawable/icon_permissao_night</item>
     </style>
+    <style name="IconTaskAgenda">
+        <item name="android:src">@drawable/icon_task_agenda_night</item>
+    </style>
 
 </resources>
