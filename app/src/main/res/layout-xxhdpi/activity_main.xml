@@ -141,6 +141,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="50dp"
                             android:layout_marginBottom="32dp"
+                            android:layout_marginEnd="20dp"
                             style="@style/BackgroundThemePendente"
 
                             >
@@ -208,7 +209,7 @@
                     android:background="@drawable/edit_text_main"
                     android:layout_marginEnd="32dp"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:padding="8dp"
                     android:layout_marginBottom="7dp"
                     android:elevation="3dp"
