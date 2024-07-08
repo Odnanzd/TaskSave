@@ -112,10 +112,6 @@
             android:windowFullscreen="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activities.activity_main"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activities.activity_cadastro"
             android:exported="false"
             android:screenOrientation="portrait" />
