@@ -13,7 +13,7 @@ android {
         minSdk 23
         targetSdk 34
         versionCode 1
-        versionName "3.5"
+        versionName "3.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -21,7 +21,7 @@ android {
         release {
             keyAlias 'tasksavekeyapk'
             keyPassword 'tasksaveapkodnan'
-            storeFile file('C:\\Users\\Odnan\\StudioProjects\\TaskSave\\keyapk.jks')
+            storeFile file('C:\\Users\\Fernando.Trindade\\AndroidStudioProjects\\TaskSave\\keyapk.jks')
             storePassword 'tasksaveapkodnan'
         }
     }

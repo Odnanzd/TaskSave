@@ -13,7 +13,8 @@ import com.example.tasksave.R;
 
 public class activity_config extends AppCompatActivity {
     private ImageView imageViewBack;
-    private LinearLayout linearLayout, linearLayoutSecPriv;
+    private LinearLayout linearLayout, linearLayoutSecPriv, linearLayoutSobre, linearLayoutNotifica,
+            linearLayoutAparencia;
     @SuppressLint("MissingSuperCall")
     public void onBackPressed() {
 
@@ -31,6 +32,9 @@ public class activity_config extends AppCompatActivity {
         imageViewBack = findViewById(R.id.imageView4);
         linearLayout = findViewById(R.id.linearLayout2);
         linearLayoutSecPriv = findViewById(R.id.linearLayoutSeg);
+        linearLayoutSobre = findViewById(R.id.linearLayoutSobre);
+        linearLayoutNotifica = findViewById(R.id.linearLayoutNot);
+        linearLayoutAparencia = findViewById(R.id.linearLayoutAparencia);
 
         imageViewBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +58,31 @@ public class activity_config extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(activity_config.this, activity_sec_priv.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
+
+        linearLayoutSobre.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(activity_config.this, activity_confg_sobre.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
+        linearLayoutNotifica.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(activity_config.this, activity_confg_notificacao.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
+        linearLayoutAparencia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(activity_config.this, activity_confg_aparencia.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }

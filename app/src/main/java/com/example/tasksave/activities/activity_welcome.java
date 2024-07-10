@@ -56,6 +56,7 @@ public class activity_welcome extends AppCompatActivity{
         loadingOverlay = findViewById(R.id.loadingOverlay);
 
 
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (!Environment.isExternalStorageManager()) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:" + getPackageName()));
