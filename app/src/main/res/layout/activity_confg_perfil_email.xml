@@ -3,11 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    style="@style/BackgroundTheme2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ActivityConfgSecFingerprint">
-
+    style="@style/BackgroundTheme2"
+    tools:context=".activities.ActivityConfgPerfilEmail">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -30,11 +29,11 @@
             android:layout_marginStart="16dp" /> <!-- Margem opcional -->
 
         <TextView
-            android:id="@+id/textViewEdit"
+            android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/ptsans_bold"
-            android:text="@string/text_view_sec_fing"
+            android:text="@string/text_view_confg_perfil_mail"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
@@ -44,70 +43,75 @@
             app:layout_constraintHorizontal_bias="0.5" /> <!-- Centraliza horizontalmente -->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        android:layout_height="56dp"
         android:layout_marginTop="40dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+
         >
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
+            android:id="@+id/linearLayoutEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
-
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             >
+
             <ImageView
+                style="@style/ImageViewIconEmail"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="15dp"
-                style="@style/IconSecFingerprint"
+                android:layout_marginTop="5dp"
                 tools:layout_editor_absoluteX="14dp"
                 tools:layout_editor_absoluteY="112dp" />
 
             <TextView
-                android:id="@+id/textView9"
-                style="@style/TextViewMain"
+                android:id="@+id/textViewEmail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="9dp"
+                android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/ptsans_bold"
                 android:gravity="start"
-                android:text="@string/text_view_sec_fing_biome"
+                android:text="@string/text_view_email"
                 android:textSize="18sp"
                 tools:layout_editor_absoluteX="0dp"
                 tools:layout_editor_absoluteY="0dp" />
 
-            <Switch
-                android:id="@+id/switch1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="17dp"
-                android:layout_marginEnd="10dp"
-                android:clickable="false"
-                android:focusable="false"
-                android:checked="false"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+            <ImageView
+                android:id="@+id/imageViewSeta2"
+                style="@style/ImageViewConfigNext"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp" />
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/imageViewPalito"
+            android:id="@+id/imageViewPalito2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/linha_horizontal"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="10dp"
             android:layout_marginTop="8dp"
-            />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout2" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

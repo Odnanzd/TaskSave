@@ -2,13 +2,10 @@ package com.example.tasksave.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +21,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.tasksave.R;
+import com.example.tasksave.sharedPreferences.SharedPreferencesConfg;
 
-public class activity_confg_aparencia extends AppCompatActivity {
+public class ActivityConfgAparencia extends AppCompatActivity {
 
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
-        Intent intent2 = new Intent(activity_confg_aparencia.this, activity_config.class);
+        Intent intent2 = new Intent(ActivityConfgAparencia.this, ActivityConfg.class);
         intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent2);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -55,7 +53,7 @@ public class activity_confg_aparencia extends AppCompatActivity {
         imageViewBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent2 = new Intent(activity_confg_aparencia.this, activity_config.class);
+                Intent intent2 = new Intent(ActivityConfgAparencia.this, ActivityConfg.class);
                 intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent2);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -73,7 +71,9 @@ public class activity_confg_aparencia extends AppCompatActivity {
     }
     void dialogRepeater(String textoRepeater) {
 
-        Dialog dialog2 = new Dialog(activity_confg_aparencia.this, R.style.DialogTheme2);
+        SharedPreferencesConfg sharedPreferencesConfg = new SharedPreferencesConfg(ActivityConfgAparencia.this);
+
+        Dialog dialog2 = new Dialog(ActivityConfgAparencia.this, R.style.DialogTheme2);
         dialog2.setContentView(R.layout.dialog_theme); // Defina o layout do diálogo
         dialog2.setCancelable(true); // Permita que o usuário toque fora do diálogo para fechá-lo
         dialog2.getWindow().getAttributes().windowAnimations = R.style.DialogTheme;
@@ -115,29 +115,19 @@ public class activity_confg_aparencia extends AppCompatActivity {
 
                 if(modoSelecionado.equals("Automático")) {
 
-                    SharedPreferences prefs0 = getSharedPreferences("ArquivoTema", MODE_PRIVATE);
-                    SharedPreferences.Editor editor0 = prefs0.edit();
-                    editor0.putString("ArqTemaString", "Automático");
-                    editor0.commit();
+                    sharedPreferencesConfg.armazenaTema("Automático");
 
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
 
                 }else if(modoSelecionado.equals("Escuro")) {
 
-                    SharedPreferences prefs0 = getSharedPreferences("ArquivoTema", MODE_PRIVATE);
-                    SharedPreferences.Editor editor0 = prefs0.edit();
-                    editor0.putString("ArqTemaString", "Escuro");
-                    editor0.commit();
+                    sharedPreferencesConfg.armazenaTema("Escuro");
 
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
 
                 }else if(modoSelecionado.equals("Claro")) {
 
-                    SharedPreferences prefs0 = getSharedPreferences("ArquivoTema", MODE_PRIVATE);
-                    SharedPreferences.Editor editor0 = prefs0.edit();
-                    editor0.putString("ArqTemaString", "Claro");
-                    editor0.commit();
-
+                    sharedPreferencesConfg.armazenaTema("Claro");
 
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 }
@@ -154,8 +144,8 @@ public class activity_confg_aparencia extends AppCompatActivity {
     }
     public String carregaTema() {
 
-        SharedPreferences sharedPreferences = getSharedPreferences("ArquivoTema", MODE_PRIVATE);
-        String temaCarregado = sharedPreferences.getString("ArqTemaString", "Automático");
+        SharedPreferencesConfg sharedPreferencesConfg = new SharedPreferencesConfg(ActivityConfgAparencia.this);
+        String temaCarregado = sharedPreferencesConfg.getTema();
 
         return temaCarregado;
 

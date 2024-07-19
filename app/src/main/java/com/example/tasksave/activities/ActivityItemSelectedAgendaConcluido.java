@@ -16,7 +16,7 @@ import com.example.tasksave.R;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class activity_item_selected_agenda_concluido extends AppCompatActivity {
+public class ActivityItemSelectedAgendaConcluido extends AppCompatActivity {
     TextView textView;
     EditText editTextTitulo;
     EditText editTextDescricao;
@@ -27,6 +27,7 @@ public class activity_item_selected_agenda_concluido extends AppCompatActivity {
     TextView textViewDataFim;
     TextView textViewHoraFim;
     ImageView imageViewBack;
+    @SuppressLint("MissingSuperCall")
     public void onBackPressed() {
         finish();
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);

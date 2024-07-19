@@ -3,7 +3,6 @@ package com.example.tasksave.activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,15 +15,16 @@ import com.example.tasksave.R;
 import com.example.tasksave.dao.AgendaDAO;
 import com.example.tasksave.objetos.Agenda;
 import com.example.tasksave.servicesreceiver.AlarmScheduler;
+import com.example.tasksave.sharedPreferences.SharedPreferencesConfg;
 
 import java.util.List;
 
-public class activity_confg_notificacao extends AppCompatActivity {
+public class ActivityConfgNotificacao extends AppCompatActivity {
 
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
-        Intent intent2 = new Intent(activity_confg_notificacao.this, activity_config.class);
+        Intent intent2 = new Intent(ActivityConfgNotificacao.this, ActivityConfg.class);
         intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent2);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -49,7 +49,7 @@ public class activity_confg_notificacao extends AppCompatActivity {
         imageViewBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent2 = new Intent(activity_confg_notificacao.this, activity_config.class);
+                Intent intent2 = new Intent(ActivityConfgNotificacao.this, ActivityConfg.class);
                 intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent2);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -65,19 +65,17 @@ public class activity_confg_notificacao extends AppCompatActivity {
                 if(aSwitch.isChecked()) {
 
                     removerLembreteTarefa();
-                    SharedPreferences prefs0 = getSharedPreferences("ArquivoNotifica", MODE_PRIVATE);
-                    SharedPreferences.Editor editor0 = prefs0.edit();
-                    editor0.putBoolean("NaoNotifica", true);
-                    editor0.commit();
+                    SharedPreferencesConfg sharedPreferencesConfg = new SharedPreferencesConfg(ActivityConfgNotificacao.this);
+                    sharedPreferencesConfg.armazenaNotifica(true);
+
                     Toast.makeText(getBaseContext(), "Notificações silenciadas", Toast.LENGTH_LONG).show();
 
                 } else {
 
-                    SharedPreferences prefs0 = getSharedPreferences("ArquivoNotifica", MODE_PRIVATE);
-                    SharedPreferences.Editor editor0 = prefs0.edit();
-                    editor0.putBoolean("NaoNotifica", false);
-                    editor0.commit();
-                    reagendaLembreteTarefa(activity_confg_notificacao.this);
+                    SharedPreferencesConfg sharedPreferencesConfg = new SharedPreferencesConfg(ActivityConfgNotificacao.this);
+                    sharedPreferencesConfg.armazenaNotifica(false);
+                    reagendaLembreteTarefa(ActivityConfgNotificacao.this);
+
                     Toast.makeText(getBaseContext(), "Notificações ativadas", Toast.LENGTH_LONG).show();
                 }
             }
@@ -86,8 +84,9 @@ public class activity_confg_notificacao extends AppCompatActivity {
     }
     public void verificaNotifica() {
 
-        SharedPreferences sharedPrefs3 = getApplicationContext().getSharedPreferences("ArquivoNotifica", Context.MODE_PRIVATE);
-        boolean notifica = sharedPrefs3.getBoolean("NaoNotifica", false);
+
+        SharedPreferencesConfg sharedPreferencesConfg = new SharedPreferencesConfg(ActivityConfgNotificacao.this);
+        boolean notifica = sharedPreferencesConfg.getNotifica();
 
         if(!notifica) {
             aSwitch.setChecked(false);
@@ -97,18 +96,18 @@ public class activity_confg_notificacao extends AppCompatActivity {
     }
     public void removerLembreteTarefa() {
 
-        AgendaDAO agendaDAO = new AgendaDAO(activity_confg_notificacao.this);
+        AgendaDAO agendaDAO = new AgendaDAO(ActivityConfgNotificacao.this);
         @SuppressLint({"NewApi", "LocalSuppress"})
         List<Agenda> agendasComLembrete = agendaDAO.obterTarefasComLembreteAtivado();
 
         for (Agenda tarefa : agendasComLembrete) {
 
-            AlarmScheduler.cancelAlarm(activity_confg_notificacao.this, tarefa.getId());
+            AlarmScheduler.cancelAlarm(ActivityConfgNotificacao.this, tarefa.getId());
 
         }
     }
     public void reagendaLembreteTarefa(Context context) {
-        AgendaDAO agendaDAO = new AgendaDAO(activity_confg_notificacao.this);
+        AgendaDAO agendaDAO = new AgendaDAO(ActivityConfgNotificacao.this);
         @SuppressLint({"NewApi", "LocalSuppress"})
         List<Agenda> agendasComLembrete = agendaDAO.obterTarefasComLembreteAtivado();
 

@@ -13,7 +13,6 @@ import android.app.NotificationManager;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -38,18 +37,17 @@ import com.example.tasksave.dao.UsuarioDAOMYsql;
 import com.example.tasksave.objetos.User;
 import com.example.tasksave.R;
 import com.example.tasksave.servicos.ServicosATT;
+import com.example.tasksave.sharedPreferences.SharedPreferencesConfg;
+import com.example.tasksave.sharedPreferences.SharedPreferencesUsuario;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executor;
 
-public class activity_splash_screen extends AppCompatActivity {
+public class ActivitySplashScreen extends AppCompatActivity {
     private static final int SPLASH_TIME_OUT = 1500;
     ImageView imageView;
     Connection con;
@@ -78,16 +76,10 @@ public class activity_splash_screen extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
 
-            SharedPreferences sharedPrefs2 = getApplicationContext().getSharedPreferences("arquivoSalvarLoginEmail", Context.MODE_PRIVATE);
-            SharedPreferences sharedPrefs = getApplicationContext().getSharedPreferences("arquivoSalvarLoginSenha", Context.MODE_PRIVATE);
-            SharedPreferences sharedPrefs3 = getApplicationContext().getSharedPreferences("ArquivoFingerPrint", Context.MODE_PRIVATE);
-            SharedPreferences sharedPrefs4 = getApplicationContext().getSharedPreferences("arquivoSalvarSenha", Context.MODE_PRIVATE);
 
-            String valorEmail = sharedPrefs2.getString("arquivo_Email", "");
-            String valorsenha = sharedPrefs.getString("arquivo_Senha", "");
+            SharedPreferencesUsuario sharedPreferencesUsuario = new SharedPreferencesUsuario(ActivitySplashScreen.this);
 
-
-            if (!isNetworkConnected(activity_splash_screen.this)) {
+            if (!isNetworkConnected(ActivitySplashScreen.this)) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -118,38 +110,25 @@ public class activity_splash_screen extends AppCompatActivity {
                 } else {
 
                     User user = new User();
-                    user.setEmail_usuario(valorEmail);
-                    user.setSenha_usuario(valorsenha);
+                    user.setEmail_usuario(sharedPreferencesUsuario.getEmailLogin());
+                    user.setSenha_usuario(sharedPreferencesUsuario.getSenhaLogin());
 
                     UsuarioDAOMYsql usuarioDAOMYsql = new UsuarioDAOMYsql();
                     ResultSet resultSet = usuarioDAOMYsql.autenticaUsuarioAWS(user);
 
-
-                    SharedPreferences sharedPrefs5 = getApplicationContext().getSharedPreferences("ArquivoATT", Context.MODE_PRIVATE);
-                    boolean arquivoATT = sharedPrefs5.getBoolean("NaoATT", false);
-
-                    Log.d("TESTE BOOLEAN", "TESTE"+arquivoATT);
+                    SharedPreferencesConfg sharedPreferencesConfg = new SharedPreferencesConfg(ActivitySplashScreen.this);
+                    boolean arquivoATT = sharedPreferencesConfg.getAtualiza();
 
                     if(!arquivoATT) {
 
                         String versaoAtual = obterVersaoAtual();
                         double versaoDBApp = usuarioDAOMYsql.getVersionAPP();
                         String versaoDBAppString = String.valueOf(versaoDBApp);
-                        servicosATT = new ServicosATT(activity_splash_screen.this, versaoAtual, versaoDBAppString);
+                        servicosATT = new ServicosATT(ActivitySplashScreen.this, versaoAtual, versaoDBAppString);
                         boolean attDisponivel = servicosATT.verificaAtt();
-                        Log.d("ATT DIS", "ATT"+attDisponivel);
+
 
                         if(attDisponivel) {
-
-                            SharedPreferences prefs0 = getSharedPreferences("ArquivoTextoAPP", MODE_PRIVATE);
-                            SharedPreferences prefs1 = getSharedPreferences("ArquivoTexto1", MODE_PRIVATE);
-                            SharedPreferences prefs2 = getSharedPreferences("ArquivoTexto2", MODE_PRIVATE);
-                            SharedPreferences prefs03 = getSharedPreferences("ArquivoTexto3", MODE_PRIVATE);
-
-                            SharedPreferences.Editor editor0 = prefs0.edit();
-                            SharedPreferences.Editor editor1 = prefs1.edit();
-                            SharedPreferences.Editor editor2 = prefs2.edit();
-                            SharedPreferences.Editor editor03 = prefs03.edit();
 
                             try {
 
@@ -158,14 +137,11 @@ public class activity_splash_screen extends AppCompatActivity {
                                 String versaoTexto2 = usuarioDAOMYsql.getTexto2APP();
                                 String versaoTexto3 = usuarioDAOMYsql.getTexto3APP();
 
-                                editor0.putString("ATT", versaoTextoAPP);
-                                editor0.commit();
-                                editor1.putString("ATT", versaoTexto1);
-                                editor1.commit();
-                                editor2.putString("ATT", versaoTexto2);
-                                editor2.commit();
-                                editor03.putString("ATT", versaoTexto3);
-                                editor03.commit();
+
+                                sharedPreferencesConfg.armazenaTextoAPP(versaoTextoAPP);
+                                sharedPreferencesConfg.armazenaTexto1(versaoTexto1);
+                                sharedPreferencesConfg.armazenaTexto2(versaoTexto2);
+                                sharedPreferencesConfg.armazenaTexto3(versaoTexto3);
 
 
                             } catch (Exception e) {
@@ -175,23 +151,20 @@ public class activity_splash_screen extends AppCompatActivity {
                                 // Retorne valores padrão em caso de erro
                             }
 
-                            SharedPreferences prefs3 = getSharedPreferences("ArquivoAttDisp", MODE_PRIVATE);
-                            SharedPreferences.Editor editor3 = prefs3.edit();
-                            editor3.putBoolean("Atualizacao", true);
-                            editor3.commit();
+                            sharedPreferencesConfg.armazenaAtualizaDisponivel(true);
+
 
                         }else {
-                            SharedPreferences prefs3 = getSharedPreferences("ArquivoAttDisp", MODE_PRIVATE);
-                            SharedPreferences.Editor editor3 = prefs3.edit();
-                            editor3.putBoolean("Atualizacao", false);
-                            editor3.commit();
+
+                            sharedPreferencesConfg.armazenaAtualizaDisponivel(false);
+
                         }
                     }
 
                     if (resultSet.next()) {
                         // Sucesso na autenticação
                         str = "Sucesso";
-                        if (sharedPrefs4.getBoolean("SalvarSenha", false) && sharedPrefs3.getBoolean("AcessoFingerPrint", false)) {
+                        if (sharedPreferencesUsuario.getSalvarSenha() && sharedPreferencesUsuario.getBiometriaUsuario()) {
 
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -200,9 +173,9 @@ public class activity_splash_screen extends AppCompatActivity {
                                 }
                             });
 
-                        } else if (sharedPrefs4.getBoolean("SalvarSenha", false) && !sharedPrefs3.getBoolean("AcessoFingerPrint", false)) {
+                        } else if (sharedPreferencesUsuario.getSalvarSenha() && !sharedPreferencesUsuario.getBiometriaUsuario()) {
 
-                            Intent intent = new Intent(activity_splash_screen.this, activity_main.class);
+                            Intent intent = new Intent(ActivitySplashScreen.this, ActivityMain.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
 
@@ -262,18 +235,17 @@ public class activity_splash_screen extends AppCompatActivity {
             @Override
             public void run() {
 
-                SharedPreferences sharedPrefs2 = getApplicationContext().getSharedPreferences("ArquivoPrimeiroAcesso", Context.MODE_PRIVATE);
-                SharedPreferences sharedPrefs = getApplicationContext().getSharedPreferences("arquivoSalvarSenha", Context.MODE_PRIVATE);
+                SharedPreferencesUsuario sharedPreferencesUsuario = new SharedPreferencesUsuario(ActivitySplashScreen.this);
 
-                if (!sharedPrefs2.getBoolean("PrimeiroAcesso", false)) {
+                if (!sharedPreferencesUsuario.getPrimeiroAcesso()) {
 
-                    Intent intent = new Intent(activity_splash_screen.this, activity_welcome.class);
+                    Intent intent = new Intent(ActivitySplashScreen.this, ActivityWelcome.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
 
-                } else if (!sharedPrefs.getBoolean("SalvarSenha", false)) {
+                } else if (!sharedPreferencesUsuario.getSalvarSenha()) {
 
-                    Intent intent = new Intent(activity_splash_screen.this, activity_login.class);
+                    Intent intent = new Intent(ActivitySplashScreen.this, ActivityLogin.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
 
@@ -294,21 +266,21 @@ public class activity_splash_screen extends AppCompatActivity {
         ChecarBiometria();
 
         Executor executor = ContextCompat.getMainExecutor(this);
-        BiometricPrompt biometricPrompt = new BiometricPrompt(activity_splash_screen.this,
+        BiometricPrompt biometricPrompt = new BiometricPrompt(ActivitySplashScreen.this,
                 executor, new BiometricPrompt.AuthenticationCallback() {
             @Override
             public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
                 super.onAuthenticationError(errorCode, errString);
                 buttonTenta.setVisibility(View.VISIBLE);
-                Toast.makeText(activity_splash_screen.this, "Erro de autenticação " + errString, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivitySplashScreen.this, "Erro de autenticação " + errString, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
-                Toast.makeText(activity_splash_screen.this, "Sucesso", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivitySplashScreen.this, "Sucesso", Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(activity_splash_screen.this, activity_main.class);
+                Intent intent = new Intent(ActivitySplashScreen.this, ActivityMain.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
@@ -317,7 +289,7 @@ public class activity_splash_screen extends AppCompatActivity {
             public void onAuthenticationFailed() {
                 super.onAuthenticationFailed();
                 buttonTenta.setVisibility(View.VISIBLE);
-                Toast.makeText(activity_splash_screen.this, "Erro", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivitySplashScreen.this, "Erro", Toast.LENGTH_SHORT).show();
             }
         });
         BiometricPrompt.PromptInfo.Builder promptInfo = CaixaDialogo();
@@ -392,8 +364,8 @@ public class activity_splash_screen extends AppCompatActivity {
         UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
         int mode = uiModeManager.getNightMode();
 
-        SharedPreferences sharedPreferences = getSharedPreferences("ArquivoTema", MODE_PRIVATE);
-        String temaCarregado = sharedPreferences.getString("ArqTemaString", "Automático");
+        SharedPreferencesConfg sharedPreferencesConfg = new SharedPreferencesConfg(ActivitySplashScreen.this);
+        String temaCarregado = sharedPreferencesConfg.getTema();
 
         if (temaCarregado.equals("Escuro")) {
             // Modo escuro ativado
@@ -404,7 +376,6 @@ public class activity_splash_screen extends AppCompatActivity {
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(imageView);
 
-            Log.d("TEMA ESCOLHIDO", "IF 1"+temaCarregado);
         } else if(temaCarregado.equals("Claro")) {
             // Modo escuro não ativado
             Glide.with(this)
@@ -413,7 +384,6 @@ public class activity_splash_screen extends AppCompatActivity {
                     .skipMemoryCache(true)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(imageView);
-            Log.d("TEMA ESCOLHIDO", "IF 2"+temaCarregado);
 
         }else if (mode == UiModeManager.MODE_NIGHT_YES) {
             // Modo escuro ativado
@@ -423,7 +393,7 @@ public class activity_splash_screen extends AppCompatActivity {
                     .skipMemoryCache(true)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(imageView);
-            Log.d("TEMA ESCOLHIDO", "IF 3"+temaCarregado);
+
         } else {
             // Modo escuro não ativado
             Glide.with(this)
@@ -432,14 +402,14 @@ public class activity_splash_screen extends AppCompatActivity {
                     .skipMemoryCache(true)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(imageView);
-            Log.d("TEMA ESCOLHIDO", "IF 4"+temaCarregado);
+
         }
     }
 
     public void carregaTema() {
 
-        SharedPreferences sharedPreferences = getSharedPreferences("ArquivoTema", MODE_PRIVATE);
-        String temaCarregado = sharedPreferences.getString("ArqTemaString", "Automático");
+        SharedPreferencesConfg sharedPreferencesConfg = new SharedPreferencesConfg(ActivitySplashScreen.this);
+        String temaCarregado = sharedPreferencesConfg.getTema();
 
         switch (temaCarregado) {
 

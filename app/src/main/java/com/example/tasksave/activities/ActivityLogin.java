@@ -1,8 +1,8 @@
 package com.example.tasksave.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -22,13 +22,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.tasksave.R;
 import com.example.tasksave.dao.UsuarioDAOMYsql;
 import com.example.tasksave.objetos.User;
+import com.example.tasksave.sharedPreferences.SharedPreferencesUsuario;
 import com.google.android.material.snackbar.Snackbar;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class activity_login extends AppCompatActivity {
+public class ActivityLogin extends AppCompatActivity {
     public EditText input_Nome;
     public EditText input_Password;
     CheckBox checkBox;
@@ -91,7 +92,7 @@ public class activity_login extends AppCompatActivity {
                     frameLayout.setClickable(false);
                     button_cadastro.setClickable(false);
                     escondeTeclado();
-                    Autentica();
+                    Autentica(ActivityLogin.this);
 
                 }
 
@@ -102,7 +103,7 @@ public class activity_login extends AppCompatActivity {
         button_cadastro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity_login.this, activity_cadastro.class);
+                Intent intent = new Intent(ActivityLogin.this, ActivityCadastro.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -110,7 +111,7 @@ public class activity_login extends AppCompatActivity {
         });
     }
 
-    public void Autentica() {
+    public void Autentica(Context context) {
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> {
@@ -125,9 +126,12 @@ public class activity_login extends AppCompatActivity {
                 UsuarioDAOMYsql usuarioDAOMYsql = new UsuarioDAOMYsql();
                 ResultSet resultSet = usuarioDAOMYsql.autenticaUsuarioAWS(user);
 
-                String userShared = usuarioDAOMYsql.usuarioCadastrado(emailUser, senhaUser);
 
-                Log.d("userShared", "username" + userShared);
+                String userShared = usuarioDAOMYsql.usuarioCadastrado(emailUser, senhaUser);
+                int idcargoUsuario = usuarioDAOMYsql.cargoUsuarioAWS(emailUser);
+
+
+                SharedPreferencesUsuario sharedPreferencesUsuario = new SharedPreferencesUsuario(context);
 
                 if (resultSet.next()) {
                     // Sucesso na autenticação
@@ -136,42 +140,31 @@ public class activity_login extends AppCompatActivity {
 
                         if(checkBox.isChecked()) {
 
-                            SharedPreferences prefs3 = getSharedPreferences("arquivoSalvarSenha", MODE_PRIVATE);
-                            SharedPreferences.Editor editor3 = prefs3.edit();
-                            editor3.putBoolean("SalvarSenha", true);
-                            editor3.apply();
+                            sharedPreferencesUsuario.armazenaSalvarSenhaBL(true);
 
-                            SharedPreferences prefs4 = getSharedPreferences("ArquivoPrimeiroAcesso", MODE_PRIVATE);
-                            SharedPreferences.Editor editor4 = prefs4.edit();
-                            editor4.putBoolean("PrimeiroAcesso", true);
-                            editor4.apply();
+                            sharedPreferencesUsuario.armazenaPrimeiroAcesso(true);
 
-                            SharedPreferences prefs = getSharedPreferences("arquivoSalvarLoginEmail", MODE_PRIVATE);
-                            SharedPreferences.Editor editor = prefs.edit();
-                            editor.putString("arquivo_Email", emailUser);
-                            editor.apply();
+                            sharedPreferencesUsuario.armazenaEmailLogin(emailUser);
 
-                            SharedPreferences pref2s = getSharedPreferences("arquivoSalvarLoginSenha", MODE_PRIVATE);
-                            SharedPreferences.Editor editor2 = pref2s.edit();
-                            editor2.putString("arquivo_Senha", senhaUser);
-                            editor2.apply();
+                            sharedPreferencesUsuario.armazenaSenhaLogin(senhaUser);
 
-                            SharedPreferences prefs5 = getSharedPreferences("arquivoSalvarUser", MODE_PRIVATE);
-                            SharedPreferences.Editor editor5 = prefs5.edit();
-                            editor5.putString("userString",userShared) ;
-                            editor5.apply();
+                            sharedPreferencesUsuario.armazenaUsuarioLogin(userShared);
+
                         }else {
-                            SharedPreferences prefs5 = getSharedPreferences("arquivoSalvarUser", MODE_PRIVATE);
-                            SharedPreferences.Editor editor5 = prefs5.edit();
-                            editor5.putString("userString",userShared) ;
-                            editor5.apply();
+
+                            sharedPreferencesUsuario.armazenaSalvarSenhaBL(false);
+
+                            sharedPreferencesUsuario.armazenaUsuarioLogin(userShared);
+
+
                         }
-                        SharedPreferences prefs4 = getSharedPreferences("ArquivoPrimeiroAcesso", MODE_PRIVATE);
-                        SharedPreferences.Editor editor4 = prefs4.edit();
-                        editor4.putBoolean("PrimeiroAcesso", true);
-                        editor4.apply();
+
+                        sharedPreferencesUsuario.armazenaUsuarioCargo(idcargoUsuario);
+
+                        sharedPreferencesUsuario.armazenaPrimeiroAcesso(true);
+
                         Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(activity_login.this, activity_main.class);
+                        Intent intent = new Intent(ActivityLogin.this, ActivityMain.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     });

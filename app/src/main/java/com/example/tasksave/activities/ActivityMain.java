@@ -35,13 +35,15 @@ import com.example.tasksave.conexaoSQLite.Conexao;
 import com.example.tasksave.R;
 import com.example.tasksave.dao.AgendaDAO;
 import com.example.tasksave.servicos.ServicosATT;
+import com.example.tasksave.sharedPreferences.SharedPreferencesConfg;
+import com.example.tasksave.sharedPreferences.SharedPreferencesUsuario;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class activity_main extends AppCompatActivity {
+public class ActivityMain extends AppCompatActivity {
     private ServicosATT servicosATT;
 
 
@@ -113,7 +115,7 @@ public class activity_main extends AppCompatActivity {
         linearLayoutConfig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentConfig = new Intent(activity_main.this, activity_config.class);
+                Intent intentConfig = new Intent(ActivityMain.this, ActivityConfg.class);
                 intentConfig.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intentConfig);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -123,7 +125,7 @@ public class activity_main extends AppCompatActivity {
         linearLayoutLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity_main.this, "Saindo...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityMain.this, "Saindo...", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -131,7 +133,7 @@ public class activity_main extends AppCompatActivity {
         linearLayoutAgenda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent2 = new Intent(activity_main.this, activity_agenda.class);
+                Intent intent2 = new Intent(ActivityMain.this, ActivityAgenda.class);
                 intent2.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                 startActivity(intent2);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
@@ -142,7 +144,7 @@ public class activity_main extends AppCompatActivity {
         linearLayoutCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent2 = new Intent(activity_main.this, activity_calendar.class);
+                Intent intent2 = new Intent(ActivityMain.this, ActivityCalendar.class);
                 startActivity(intent2);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
@@ -187,8 +189,8 @@ public class activity_main extends AppCompatActivity {
 
     public void ExibirUsername() {
 
-        SharedPreferences sharedPrefs = getApplicationContext().getSharedPreferences("arquivoSalvarUser", Context.MODE_PRIVATE);
-        String sharedPrd = sharedPrefs.getString("userString", "");
+        SharedPreferencesUsuario sharedPreferencesUsuario = new SharedPreferencesUsuario(ActivityMain.this);
+        String sharedPrd = sharedPreferencesUsuario.getUsuarioLogin();
 
         String[] Nomes = sharedPrd.split(" ");
         if (Nomes.length > 0) {
@@ -216,13 +218,11 @@ public class activity_main extends AppCompatActivity {
 
     public void dialogFingerprint() {
 
+        SharedPreferencesUsuario sharedPreferencesUsuario = new SharedPreferencesUsuario(ActivityMain.this);
 
-        SharedPreferences sharedPrefs2 = getApplicationContext().getSharedPreferences("ArquivoPrimeiroAcessoFingerPrint", Context.MODE_PRIVATE);
-        SharedPreferences sharedPrefs3 = getApplicationContext().getSharedPreferences("arquivoSalvarSenha", Context.MODE_PRIVATE);
+        if(!sharedPreferencesUsuario.getPrimeiroAcessoBiometriaUsuario() && sharedPreferencesUsuario.getSalvarSenha()){
 
-        if(!sharedPrefs2.getBoolean("PrimeiroAcessoFingerPrint", false) && sharedPrefs3.getBoolean("SalvarSenha", false)){
-
-            Dialog dialog = new Dialog(activity_main.this, R.style.DialogAboveKeyboard);
+            Dialog dialog = new Dialog(ActivityMain.this, R.style.DialogAboveKeyboard);
             dialog.setContentView(R.layout.dialog_fingerprint); // Defina o layout do diálogo
             dialog.setCancelable(true); // Permita que o usuário toque fora do diálogo para fechá-lo
             dialog.getWindow().getAttributes().windowAnimations = R.style.DialogTheme;
@@ -234,15 +234,9 @@ public class activity_main extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    SharedPreferences prefs = getSharedPreferences("ArquivoFingerPrint", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putBoolean("AcessoFingerPrint", true);
-                    editor.commit();
+                    sharedPreferencesUsuario.armazenaBiometria(true);
 
-                    SharedPreferences prefs2 = getSharedPreferences("ArquivoPrimeiroAcessoFingerPrint", MODE_PRIVATE);
-                    SharedPreferences.Editor editor2 = prefs2.edit();
-                    editor2.putBoolean("PrimeiroAcessoFingerPrint", true);
-                    editor2.commit();
+                    sharedPreferencesUsuario.armazenaPrimeiroAcessoFingerprint(true);
 
                     dialog.dismiss();
                 }
@@ -252,15 +246,10 @@ public class activity_main extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    SharedPreferences prefs = getSharedPreferences("ArquivoFingerPrint", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putBoolean("AcessoFingerPrint", false);
-                    editor.commit();
+                    sharedPreferencesUsuario.armazenaBiometria(false);
 
-                    SharedPreferences prefs2 = getSharedPreferences("ArquivoPrimeiroAcessoFingerPrint", MODE_PRIVATE);
-                    SharedPreferences.Editor editor2 = prefs2.edit();
-                    editor2.putBoolean("PrimeiroAcessoFingerPrint", true);
-                    editor2.commit();
+                    sharedPreferencesUsuario.armazenaPrimeiroAcessoFingerprint(true);
+
 
                     dialog.dismiss();
                 }
@@ -289,23 +278,16 @@ public class activity_main extends AppCompatActivity {
     }
     public void dialogAtt() {
 
-        SharedPreferences sharedPrefs2 = getApplicationContext().getSharedPreferences("ArquivoAttDisp", Context.MODE_PRIVATE);
+        SharedPreferencesConfg sharedPreferencesConfg = new SharedPreferencesConfg(ActivityMain.this);
+        boolean attDisp = sharedPreferencesConfg.getAtualizaDisponivel();
 
-        SharedPreferences sharedPrefs3 = getApplicationContext().getSharedPreferences("ArquivoTextoAPP", Context.MODE_PRIVATE);
-        SharedPreferences sharedPrefs4 = getApplicationContext().getSharedPreferences("ArquivoTexto1", Context.MODE_PRIVATE);
-        SharedPreferences sharedPrefs5 = getApplicationContext().getSharedPreferences("ArquivoTexto2", Context.MODE_PRIVATE);
-        SharedPreferences sharedPrefs6 = getApplicationContext().getSharedPreferences("ArquivoTexto3", Context.MODE_PRIVATE);
+        String versaoTextoAPP = sharedPreferencesConfg.getTextoAPP();
+        String versaoTexto1 = sharedPreferencesConfg.getTexto1();
+        String versaoTexto2 = sharedPreferencesConfg.getTexto2();
+        String versaoTexto3 = sharedPreferencesConfg.getTexto3();
 
-        String versaoTextoAPP = sharedPrefs3.getString("ATT", "");
-        String versaoTexto1 = sharedPrefs4.getString("ATT", "");
-        String versaoTexto2 = sharedPrefs5.getString("ATT", "");
-        String versaoTexto3 = sharedPrefs6.getString("ATT", "");
-
-        Log.d("teste boolean","teste att"+sharedPrefs2.getBoolean("Atualizacao", false));
-
-
-        if(sharedPrefs2.getBoolean("Atualizacao", false)) {
-            servicosATT = new ServicosATT(activity_main.this, "1", "100");
+        if(attDisp) {
+            servicosATT = new ServicosATT(ActivityMain.this, "1", "100");
             servicosATT.dialogAtt(versaoTextoAPP, versaoTexto1, versaoTexto2, versaoTexto3);
         }
     }

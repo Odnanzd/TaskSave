@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,12 +20,13 @@ import android.widget.Toast;
 import com.example.tasksave.R;
 import com.example.tasksave.dao.UsuarioDAOMYsql;
 import com.example.tasksave.objetos.User;
+import com.example.tasksave.sharedPreferences.SharedPreferencesUsuario;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class activity_confg_perfil_nome extends AppCompatActivity {
+public class ActivityConfgPerfilNome extends AppCompatActivity {
 
 
     FrameLayout frameLayout;
@@ -38,7 +38,7 @@ public class activity_confg_perfil_nome extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        Intent intent = new Intent(activity_confg_perfil_nome.this, activity_confg_perfil.class);
+        Intent intent = new Intent(ActivityConfgPerfilNome.this, ActivityConfgPerfil.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -58,10 +58,8 @@ public class activity_confg_perfil_nome extends AppCompatActivity {
         textView2 = findViewById(R.id.textViewPerfil2);
         imageViewback = findViewById(R.id.imageView4);
 
-        SharedPreferences sharedPrefs = getApplicationContext().getSharedPreferences("arquivoSalvarUser", Context.MODE_PRIVATE);
-        String sharedPrd = sharedPrefs.getString("userString", "");
+        usuarioNomeAtual();
 
-        editTextNomeCompleto.setHint(sharedPrd);
         frameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,7 +88,7 @@ public class activity_confg_perfil_nome extends AppCompatActivity {
         imageViewback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity_confg_perfil_nome.this, activity_confg_perfil.class);
+                Intent intent = new Intent(ActivityConfgPerfilNome.this, ActivityConfgPerfil.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -107,8 +105,8 @@ public class activity_confg_perfil_nome extends AppCompatActivity {
 
             try {
 
-                SharedPreferences sharedPrefs2 = getApplicationContext().getSharedPreferences("arquivoSalvarLoginEmail", Context.MODE_PRIVATE);
-                String valorEmail = sharedPrefs2.getString("arquivo_Email", "");
+                SharedPreferencesUsuario sharedPreferencesUsuario = new SharedPreferencesUsuario(ActivityConfgPerfilNome.this);
+                String valorEmail = sharedPreferencesUsuario.getEmailLogin();
 
                 UsuarioDAOMYsql usuarioDAOMYsql = new UsuarioDAOMYsql();
 
@@ -123,10 +121,7 @@ public class activity_confg_perfil_nome extends AppCompatActivity {
                 if (sucesso) {
                     runOnUiThread(() -> {
 
-                        SharedPreferences prefs5 = getSharedPreferences("arquivoSalvarUser", MODE_PRIVATE);
-                        SharedPreferences.Editor editor5 = prefs5.edit();
-                        editor5.putString("userString",nomeCompleto) ;
-                        editor5.apply();
+                        sharedPreferencesUsuario.armazenaUsuarioLogin(nomeCompleto);
 
                         Toast.makeText(getApplicationContext(), "Nome alterado", Toast.LENGTH_SHORT).show();
                         textView.setVisibility(View.VISIBLE);
@@ -152,5 +147,13 @@ public class activity_confg_perfil_nome extends AppCompatActivity {
         if (view2 != null) {
             imm.hideSoftInputFromWindow(view2.getWindowToken(), 0);
         }
+    }
+    public void usuarioNomeAtual() {
+
+        SharedPreferencesUsuario sharedPreferencesUsuario = new SharedPreferencesUsuario(ActivityConfgPerfilNome.this);
+        String sharedPrd = sharedPreferencesUsuario.getUsuarioLogin();
+
+        editTextNomeCompleto.setHint(sharedPrd);
+
     }
 }

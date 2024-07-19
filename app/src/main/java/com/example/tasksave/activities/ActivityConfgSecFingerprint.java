@@ -1,9 +1,7 @@
 package com.example.tasksave.activities;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,8 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricManager;
 
 import com.example.tasksave.R;
+import com.example.tasksave.sharedPreferences.SharedPreferencesUsuario;
 
-public class activity_sec_fingerprint extends AppCompatActivity {
+public class ActivityConfgSecFingerprint extends AppCompatActivity {
 
     private ImageView imageViewBack;
     private LinearLayout linearLayoutFingerprint;
@@ -26,7 +25,7 @@ public class activity_sec_fingerprint extends AppCompatActivity {
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(activity_sec_fingerprint.this, activity_sec_priv.class);
+        Intent intent = new Intent(ActivityConfgSecFingerprint.this, ActivityConfgSecPriv.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -54,7 +53,7 @@ public class activity_sec_fingerprint extends AppCompatActivity {
         imageViewBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity_sec_fingerprint.this, activity_sec_priv.class);
+                Intent intent = new Intent(ActivityConfgSecFingerprint.this, ActivityConfgSecPriv.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -74,8 +73,8 @@ public class activity_sec_fingerprint extends AppCompatActivity {
     }
     public void fingerprintSwitch() {
 
-        SharedPreferences sharedPrefs3 = getApplicationContext().getSharedPreferences("ArquivoFingerPrint", Context.MODE_PRIVATE);
-        boolean fingerprint = sharedPrefs3.getBoolean("AcessoFingerPrint", false);
+        SharedPreferencesUsuario sharedPreferencesUsuario = new SharedPreferencesUsuario(ActivityConfgSecFingerprint.this);
+        boolean fingerprint = sharedPreferencesUsuario.getBiometriaUsuario();
 
         if (fingerprint) {
             aSwitch.setChecked(true);
@@ -85,7 +84,9 @@ public class activity_sec_fingerprint extends AppCompatActivity {
     }
     public void attFingerprintPositivo() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity_sec_fingerprint.this);
+        SharedPreferencesUsuario sharedPreferencesUsuario = new SharedPreferencesUsuario(ActivityConfgSecFingerprint.this);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityConfgSecFingerprint.this);
         builder.setTitle("Confirmar");
         builder.setCancelable(false);
         builder.setMessage("Deseja confirmar as alterações e sair? ");
@@ -93,11 +94,9 @@ public class activity_sec_fingerprint extends AppCompatActivity {
             fingerprintSwitch();
         });
         builder.setPositiveButton("Sim", (dialog, which) -> {
-            // Ação para o botão OK
-            SharedPreferences prefs = getSharedPreferences("ArquivoFingerPrint", MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("AcessoFingerPrint", true);
-            editor.commit();
+
+            sharedPreferencesUsuario.armazenaBiometria(true);
+
             finish();
             Toast.makeText(getBaseContext(), "Biometria ativada", Toast.LENGTH_SHORT).show();
 
@@ -108,7 +107,9 @@ public class activity_sec_fingerprint extends AppCompatActivity {
     }
     public void attFingerprintNegativo() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity_sec_fingerprint.this);
+        SharedPreferencesUsuario sharedPreferencesUsuario = new SharedPreferencesUsuario(ActivityConfgSecFingerprint.this);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityConfgSecFingerprint.this);
         builder.setTitle("Confirmar");
         builder.setCancelable(false);
         builder.setMessage("Deseja confirmar as alterações e sair? ");
@@ -117,11 +118,9 @@ public class activity_sec_fingerprint extends AppCompatActivity {
 
         });
         builder.setPositiveButton("Sim", (dialog, which) -> {
-            // Ação para o botão OK
-            SharedPreferences prefs = getSharedPreferences("ArquivoFingerPrint", MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("AcessoFingerPrint", false);
-            editor.commit();
+
+            sharedPreferencesUsuario.armazenaBiometria(false);
+
             finish();
             Toast.makeText(getBaseContext(), "Biometria desativada", Toast.LENGTH_SHORT).show();
 

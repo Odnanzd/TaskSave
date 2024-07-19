@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tasksave.R;
 
-public class activity_sec_priv extends AppCompatActivity {
+public class ActivityConfgSecPriv extends AppCompatActivity {
 
 
     private ImageView imageViewBack;
@@ -21,7 +21,7 @@ public class activity_sec_priv extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        Intent intent = new Intent(activity_sec_priv.this, activity_config.class);
+        Intent intent = new Intent(ActivityConfgSecPriv.this, ActivityConfg.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -35,11 +35,12 @@ public class activity_sec_priv extends AppCompatActivity {
         imageViewBack = findViewById(R.id.imageView4);
         linearLayoutBiometria = findViewById(R.id.linearLayoutSeg);
         linearLayoutPermissao = findViewById(R.id.linearLayoutNot);
+        linearLayoutSenha = findViewById(R.id.linearLayout2);
 
         imageViewBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity_sec_priv.this, activity_config.class);
+                Intent intent = new Intent(ActivityConfgSecPriv.this, ActivityConfg.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
@@ -48,7 +49,7 @@ public class activity_sec_priv extends AppCompatActivity {
         linearLayoutBiometria.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity_sec_priv.this, activity_sec_fingerprint.class);
+                Intent intent = new Intent(ActivityConfgSecPriv.this, ActivityConfgSecFingerprint.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
@@ -56,9 +57,20 @@ public class activity_sec_priv extends AppCompatActivity {
         linearLayoutPermissao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity_sec_priv.this, activity_sec_permissao.class);
+                Intent intent = new Intent(ActivityConfgSecPriv.this, ActivityConfgSecPermissao.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
+
+        linearLayoutSenha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(ActivityConfgSecPriv.this, ActivityConfgSecSenha.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
             }
         });
     }

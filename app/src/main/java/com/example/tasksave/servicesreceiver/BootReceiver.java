@@ -22,7 +22,7 @@ public class BootReceiver extends BroadcastReceiver {
             List<Agenda> agendasComLembrete = agendaDAO.obterTarefasComLembreteAtivado();
 
             for (Agenda tarefa : agendasComLembrete) {
-                if (!tarefa.getFinalizado()) {
+                if (!tarefa.getFinalizado() && tarefa.getRepetirModo()!=0) {
                     AlarmScheduler.scheduleAlarm(
                             context,
                             tarefa.getDateTimeInMillis(),
@@ -38,4 +38,3 @@ public class BootReceiver extends BroadcastReceiver {
         }
     }
 }
-
